@@ -1,15 +1,17 @@
 import { Board } from "./Board";
 import { Controls } from "./Controls";
 import { Renderer } from "./Renderer";
+import { SimulationLoop } from "./SimulationLoop";
 
 window.onload = () => {
     let board = new Board(10, 10);
-    let renderer = new Renderer();
-    let controls = new Controls(renderer);
     
+    let renderer = new Renderer();
     renderer.board = board;
     renderer.start();
+    
+    let simulationLoop = new SimulationLoop(board);
+    simulationLoop.start();
 
-    // mock game loop
-    setInterval(() => board.step(), 1000);
+    let controls = new Controls(renderer, simulationLoop);
 }
