@@ -2,14 +2,11 @@ import { Board } from "./Board";
 import { Renderer } from "./Renderer";
 
 window.onload = () => {
-    let renderer = new Renderer;
+    let board = new Board(10, 10);
+    
+    let renderer = new Renderer();
+    renderer.start(board);
 
-    let board = new Board();
-    board.data = [
-        [1, 0, 1],
-        [0, 1, 0],
-        [1, 0, 1]
-    ];
-
-    renderer.draw(board);
+    // mock game loop
+    setInterval(() => board.step(), 1000);
 }
