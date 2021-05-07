@@ -14,15 +14,26 @@
       margin: 0;
     }
 
-    canvas {
+    #board {
+      position: absolute;
+      left: 0;
+      top: 0;
       display: block;
       width: 100vw;
       height: 100vh;
+      z-index: -1;
     }
   </style>
 </head>
 
 <body>
+  <button id="toggle-controls-btn">Show/Hide controls</button>
+  <div id="controls">
+    <div id="render-settings">
+      <button id="start-renderer-btn">Start</button>
+      <button id="stop-renderer-btn">Stop</button>
+    </div>
+  </div>
   <canvas id="board"></canvas>
 </body>
 
