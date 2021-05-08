@@ -3,12 +3,15 @@ import { Board } from "./Board";
 export class Renderer {
     protected canvas: HTMLCanvasElement;
     protected ctx: CanvasRenderingContext2D;
-    protected _board!: Board;
+    public board!: Board;
     protected stopFlag: boolean = false;
 
-    constructor() {
+    constructor(board?: Board) {
         this.canvas = document.getElementById('board') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        if (board)
+            this.board = board;
     }
 
     public start(): void {
@@ -17,15 +20,6 @@ export class Renderer {
 
     public stop(): void {
         this.stopFlag = true;
-    }
-
-    public set board(board: Board) {
-        if (board)
-            this._board = board;
-    }
-
-    public get board(): Board {
-        return this._board;
     }
 
     protected draw(): void {

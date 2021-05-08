@@ -1,16 +1,20 @@
 export class Board {
-    protected _data: number[][] = [];
+    public data: number[][] = [];
 
-    constructor(width: number, height: number) {
-        this.resize(width, height);
+    constructor(width?: number, height?: number) {
+        if (width && height)
+            this.data = new Array(height).fill(0).map(() => new Array(width).fill(0));
     }
 
     public randomize(): void {
-        this._data.forEach((row, y) => {
-            row.forEach((cell, x) => {
-                this._data[x][y] = Math.round(Math.random());
-            })
-        })
+        let width: number = this.width;
+        let height: number = this.height;
+
+        for(let y = 0; y < height; y++) {
+            for(let x = 0; x < width; x++) {
+                this.data[y][x] = Math.round(Math.random());
+            }
+        }
     }
 
     public step(): void {
@@ -18,28 +22,33 @@ export class Board {
         this.randomize();
     }
 
-    public resize(width: number, height: number): void {
-        // TODO preserve values
-        // TODO doesn't work when not square, FIX!!
-        this._data = new Array(height).fill(0).map(() => new Array(width).fill(0));
-    }
+    public copyAndResize(width: number, height: number): Board {
+        let oldWidth: number = this.width;
+        let oldHeight: number = this.height;
+        
+        let newData: number[][] = [];
+        for(let y = 0; y < height; y++) {
+            newData[y] = [];
+            for(let x = 0; x < width; x++) {
+                if (x < oldWidth && y < oldHeight)
+                    newData[y][x] = this.data[y][x];
+                else
+                    newData[y][x] = 0;
+            }
+        }
 
-    public get data() {
-        return this._data;        
-    }
-
-    public set data(data: number[][]) {
-        if (!data) throw new Error('Invalid board data');
-        this._data = data;
+        let newBoard: Board = new Board();
+        newBoard.data = newData;
+        return newBoard;
     }
 
     public get width() {
-        if (!this._data) return 0;
-        return this._data[0].length;
+        if (!this.data) return 0;
+        return this.data[0].length;
     }
 
     public get height() {
-        if (!this._data) return 0;
-        return this._data.length;
+        if (!this.data) return 0;
+        return this.data.length;
     }
 }
