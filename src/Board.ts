@@ -2,7 +2,7 @@ export class Board {
     protected _data: number[][] = [];
 
     constructor(width: number, height: number) {
-        this._data = new Array(height).fill(0).map(() => new Array(width).fill(0));
+        this.resize(width, height);
     }
 
     public randomize(): void {
@@ -16,6 +16,12 @@ export class Board {
     public step(): void {
         // TODO calculate new cells; just randomize for now
         this.randomize();
+    }
+
+    public resize(width: number, height: number): void {
+        // TODO preserve values
+        // TODO doesn't work when not square, FIX!!
+        this._data = new Array(height).fill(0).map(() => new Array(width).fill(0));
     }
 
     public get data() {
