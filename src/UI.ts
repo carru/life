@@ -1,3 +1,8 @@
+export enum Theme {
+    DARK = '1',
+    LIGHT = '2'
+}
+
 export class UI {
     public toggle = document.getElementById('toggle-controls-btn') as HTMLButtonElement;
 

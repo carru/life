@@ -1,15 +1,9 @@
 import { Board } from "./Board";
 
-export enum Theme {
-    DARK = 1,
-    LIGHT
-}
-
 export class Renderer {
     protected canvas: HTMLCanvasElement;
     protected ctx: CanvasRenderingContext2D;
     public board!: Board;
-    public theme: Theme = Theme.DARK;
     protected requestID: number | undefined;
 
     constructor(board?: Board) {
@@ -36,14 +30,7 @@ export class Renderer {
 
         this.scaleToBoardSize();
 
-        switch (this.theme) {
-            case Theme.LIGHT:
-                this.ctx.fillStyle = 'black';
-                break;
-            case Theme.DARK:
-                this.ctx.fillStyle = 'white';
-                break;
-        }
+        this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--cell');
         Board.loop(this.board.data, (cell, x, y) => {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);

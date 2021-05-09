@@ -1,7 +1,7 @@
 import { Board } from "./Board";
-import { Renderer, Theme } from "./Renderer";
+import { Renderer } from "./Renderer";
 import { SimulationLoop, SimulationSpeed } from "./SimulationLoop";
-import { UI } from "./UI";
+import { Theme, UI } from "./UI";
 
 export class Controls {
     protected renderer: Renderer;
@@ -34,8 +34,8 @@ export class Controls {
     protected setUiEvents(): void {
         this.ui.toggle.onclick = () => this.toggle();
         
-        this.ui.themeDark.onchange = (e) => this.onThemeChange((e.target as any).value);
-        this.ui.themeLight.onchange = (e) => this.onThemeChange((e.target as any).value);
+        this.ui.themeDark.onchange = (e) => this.theme = (e.target as any).value;
+        this.ui.themeLight.onchange = (e) => this.theme = (e.target as any).value;
         this.ui.startRenderer.onclick = () => this.renderer.start();
         this.ui.stopRenderer.onclick = () => this.renderer.stop();
 
@@ -69,12 +69,7 @@ export class Controls {
         this.ui.boardHeight.value = String(boardHeight);
     }
 
-    protected onThemeChange(value: string): void {
-        this.theme = Number(value);
-    }
-
     protected set theme(theme: Theme) {
-        this.renderer.theme = theme;
         switch (theme) {
             case Theme.DARK:
                 document.body.className = 'dark-theme'

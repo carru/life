@@ -1,10 +1,12 @@
 .dark-theme {
+    --cell: white;
     --text: white;
     --background: black;
     --controls-background: rgba(0, 0, 0, 0.75);
 }
 
 .light-theme {
+    --cell: black;
     --text: black;
     --background: white;
     --controls-background: rgba(255, 255, 255, .75);
