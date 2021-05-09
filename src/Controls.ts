@@ -27,6 +27,7 @@ export class Controls {
         $("#toggle-controls-btn").on("click", () => this.toggle());
         $("#clear-board-btn").on("click", () => this.board.clear());
         $("#randomize-board-btn").on("click", () => this.board.randomize());
+        $("#step-simulation-btn").on("click", () => this.singleStep());
         $("#board-width").on("change", () => this.updateBoardSize());
         $("#board-height").on("change", () => this.updateBoardSize());
     }
@@ -79,6 +80,11 @@ export class Controls {
 
     protected toggle() {
         $("#controls").toggle();
+    }
+
+    protected singleStep(): void {
+        this._simulationLoop.stop();
+        this.board.step();
     }
 
     protected updateSpeed(speed: SimulationSpeed): void {
