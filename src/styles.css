@@ -1,14 +1,16 @@
 .dark-theme {
+    --prefabCell: rgba(120, 110, 255, 0.75);
     --highlightedCell: rgba(0, 255, 76, 0.75);
-    --cell: white;
+    --activeCell: white;
     --text: white;
     --background: black;
     --controls-background: rgba(0, 0, 0, 0.75);
 }
 
 .light-theme {
+    --prefabCell: rgba(120, 110, 255, 0.75);
     --highlightedCell: rgba(0, 255, 76, 0.75);
-    --cell: black;
+    --activeCell: black;
     --text: black;
     --background: white;
     --controls-background: rgba(255, 255, 255, .75);

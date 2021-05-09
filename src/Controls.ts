@@ -23,6 +23,7 @@ export class Controls {
         // Initialize renderer
         this.renderer = new Renderer(this.board);
         this.renderer.start();
+        this.theme = Theme.DARK;
 
         // Initialize simulation loop
         this.simulationLoop = new SimulationLoop(this.board, this.speed);
@@ -30,10 +31,10 @@ export class Controls {
 
         this.setUiEvents();
     }
-    
+
     protected setUiEvents(): void {
         this.ui.toggle.onclick = () => this.toggle();
-        
+
         this.ui.themeDark.onchange = (e) => this.theme = (e.target as any).value;
         this.ui.themeLight.onchange = (e) => this.theme = (e.target as any).value;
         this.ui.startRenderer.onclick = () => this.renderer.start();
@@ -78,6 +79,13 @@ export class Controls {
                 document.body.className = 'light-theme'
                 break;
         }
+
+        let style = getComputedStyle(document.body);
+        this.renderer.colours = {
+            active: style.getPropertyValue('--activeCell'),
+            highlighted: style.getPropertyValue('--highlightedCell'),
+            prefab: style.getPropertyValue('--prefabCell'),
+        }
     }
 
     protected toggle() {
@@ -97,7 +105,7 @@ export class Controls {
     protected get speed() {
         return this._speed;
     }
-    
+
     protected set speed(speed: SimulationSpeed) {
         this._speed = speed;
         if (this.simulationLoop) {
