@@ -48,7 +48,14 @@ export class Renderer {
     }
 
     protected onMouseClick(): void {
-        if (this.board && this.highlightedCellX !== undefined && this.highlightedCellY !== undefined)
+        if (!this.board) return;
+        if (!this.highlightedCellX || !this.highlightedCellY) return;
+
+        if (this.activePrefab) {
+            this.board.insertPrefab(this.highlightedCellX, this.highlightedCellY, this.activePrefab);
+            this.activePrefab = undefined;
+        }
+        else
             this.board.toggleCell(this.highlightedCellX, this.highlightedCellY);
     }
 

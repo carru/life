@@ -52,6 +52,13 @@ export class Board {
         return new Array(height).fill(0).map(() => new Array(width).fill(0));
     }
 
+    public insertPrefab(x: number, y: number, prefab: number[][]): void {
+        Board.loop(prefab, (cell, pfx, pfy) => {
+            if (cell)
+                this.data[y + pfy][x + pfx] = 1;
+        });
+    }
+
     public step(): void {
         let neighbours: number[][] = this.calculateNeighbours();
         this.loopAndSetData((cell, x, y) => {
