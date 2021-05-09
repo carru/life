@@ -32,14 +32,22 @@ body {
     z-index: -1;
 }
 
-#controls.hidden {
+#controls {
+    width: fit-content;
+}
+
+#prefabs {
+    right: 0;
+    width: 20em;
+}
+
+.hidden {
     display: none;
 }
 
-#controls {
+.panel {
     position: absolute;
     background-color: var(--controls-background);
-    width: fit-content;
 }
 
 .board-size-input {

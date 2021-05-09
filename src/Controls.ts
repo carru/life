@@ -33,7 +33,8 @@ export class Controls {
     }
 
     protected setUiEvents(): void {
-        this.ui.toggle.onclick = () => this.toggle();
+        this.ui.settings.onclick = () => this.togglePanelDisplay(this.ui.controlsPanel);
+        this.ui.prefabs.onclick = () => this.togglePanelDisplay(this.ui.prefabsPanel);
 
         this.ui.themeDark.onchange = (e) => this.theme = (e.target as any).value;
         this.ui.themeLight.onchange = (e) => this.theme = (e.target as any).value;
@@ -88,13 +89,8 @@ export class Controls {
         }
     }
 
-    protected toggle() {
-        if (this.ui.controls) {
-            if (this.ui.controls.className === 'hidden')
-                this.ui.controls.className = '';
-            else
-                this.ui.controls.className = 'hidden';
-        }
+    protected togglePanelDisplay(panel: HTMLElement) {
+        panel.classList.toggle('hidden');
     }
 
     protected singleStep(): void {

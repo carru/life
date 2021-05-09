@@ -4,9 +4,11 @@ export enum Theme {
 }
 
 export class UI {
-    public toggle = document.getElementById('toggle-controls-btn') as HTMLButtonElement;
+    public settings = document.getElementById('settings-btn') as HTMLButtonElement;
+    public prefabs = document.getElementById('prefabs-btn') as HTMLButtonElement;
 
-    public controls = document.getElementById('controls') as HTMLElement ;
+    // Settings panel
+    public controlsPanel = document.getElementById('controls') as HTMLElement ;
 
     // Renderer
     public themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
@@ -28,4 +30,7 @@ export class UI {
     public speed2Simulation = document.getElementById('simulation-speed-2-btn') as HTMLButtonElement;
     public speed3Simulation = document.getElementById('simulation-speed-3-btn') as HTMLButtonElement;
     public speed4Simulation = document.getElementById('simulation-speed-4-btn') as HTMLButtonElement;
+
+    // Prefabs panel
+    public prefabsPanel = document.getElementById('prefabs') as HTMLElement ;
 }
