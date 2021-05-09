@@ -7,12 +7,20 @@ export class Board {
     }
 
     public randomize(): void {
+        this.loopAndSet(-1);
+    }
+
+    public clear(): void {
+        this.loopAndSet(0);
+    }
+
+    protected loopAndSet(value: number): void {
         let width: number = this.width;
         let height: number = this.height;
 
         for(let y = 0; y < height; y++) {
             for(let x = 0; x < width; x++) {
-                this.data[y][x] = Math.round(Math.random());
+                this.data[y][x] = (value === -1) ? Math.round(Math.random()) : value;
             }
         }
     }

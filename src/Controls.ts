@@ -12,20 +12,22 @@ export class Controls {
     protected board: Board;
 
     constructor() {
-        $("#toggle-controls-btn").on("click", () => this.toggle());
         this.boardWidth = 50;
         this.boardHeight = 50;
-        $("#board-width").on("change", () => this.updateBoardSize());
-        $("#board-height").on("change", () => this.updateBoardSize());
-
+        
         this.board = new Board(this.boardWidth, this.boardHeight);
-
+        
         this.renderer = new Renderer(this.board);
         this.renderer.start();
-
+        
         this.speed = SimulationSpeed.NORMAL;
         this.simulationLoop = new SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
+        
+        $("#toggle-controls-btn").on("click", () => this.toggle());
+        $("#clear-board-btn").on("click", () => this.board.clear());
+        $("#board-width").on("change", () => this.updateBoardSize());
+        $("#board-height").on("change", () => this.updateBoardSize());
     }
 
     public get boardWidth() {
