@@ -50,6 +50,12 @@ class Board {
     newBlankGrid(width, height) {
         return new Array(height).fill(0).map(() => new Array(width).fill(0));
     }
+    insertPrefab(x, y, prefab) {
+        Board.loop(prefab, (cell, pfx, pfy) => {
+            if (cell)
+                this.data[y + pfy][x + pfx] = 1;
+        });
+    }
     step() {
         let neighbours = this.calculateNeighbours();
         this.loopAndSetData((cell, x, y) => {
@@ -147,6 +153,7 @@ exports.Board = Board;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Controls = void 0;
 const Board_1 = __webpack_require__(336);
+const Prefabs_1 = __webpack_require__(17);
 const Renderer_1 = __webpack_require__(570);
 const SimulationLoop_1 = __webpack_require__(945);
 const UI_1 = __webpack_require__(191);
@@ -170,7 +177,8 @@ class Controls {
         this.setUiEvents();
     }
     setUiEvents() {
-        this.ui.toggle.onclick = () => this.toggle();
+        this.ui.settings.onclick = () => this.togglePanelDisplay(this.ui.controlsPanel);
+        this.ui.prefabs.onclick = () => this.togglePanelDisplay(this.ui.prefabsPanel);
         this.ui.themeDark.onchange = (e) => this.theme = e.target.value;
         this.ui.themeLight.onchange = (e) => this.theme = e.target.value;
         this.ui.startRenderer.onclick = () => this.renderer.start();
@@ -186,6 +194,8 @@ class Controls {
         this.ui.speed2Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.FAST;
         this.ui.speed3Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.FASTER;
         this.ui.speed4Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.LUDICROUS;
+        this.ui.cancelPrefab.onclick = () => this.renderer.activePrefab = undefined;
+        this.ui.prefabGlider.onclick = () => this.renderer.activePrefab = Prefabs_1.Prefabs.glider;
     }
     get boardWidth() {
         return Number(this.ui.boardWidth.value);
@@ -215,13 +225,8 @@ class Controls {
             prefab: style.getPropertyValue('--prefabCell'),
         };
     }
-    toggle() {
-        if (this.ui.controls) {
-            if (this.ui.controls.className === 'hidden')
-                this.ui.controls.className = '';
-            else
-                this.ui.controls.className = 'hidden';
-        }
+    togglePanelDisplay(panel) {
+        panel.classList.toggle('hidden');
     }
     singleStep() {
         this.simulationLoop.stop();
@@ -256,12 +261,31 @@ exports.Controls = Controls;
 
 /***/ }),
 
-/***/ 570:
+/***/ 17:
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Prefabs = void 0;
+class Prefabs {
+}
+exports.Prefabs = Prefabs;
+Prefabs.glider = [
+    [0, 1, 0],
+    [0, 0, 1],
+    [1, 1, 1]
+];
+
+
+/***/ }),
+
+/***/ 570:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Renderer = void 0;
+const Board_1 = __webpack_require__(336);
 class Renderer {
     constructor(board) {
         this.canvas = document.getElementById('board');
@@ -287,7 +311,15 @@ class Renderer {
         }
     }
     onMouseClick() {
-        if (this.board && this.highlightedCellX !== undefined && this.highlightedCellY !== undefined)
+        if (!this.board)
+            return;
+        if (!this.highlightedCellX || !this.highlightedCellY)
+            return;
+        if (this.activePrefab) {
+            this.board.insertPrefab(this.highlightedCellX, this.highlightedCellY, this.activePrefab);
+            this.activePrefab = undefined;
+        }
+        else
             this.board.toggleCell(this.highlightedCellX, this.highlightedCellY);
     }
     draw() {
@@ -300,10 +332,21 @@ class Renderer {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);
         });
-        // Draw highlighted cell
+        // Is mouse over canvas?
         if (this.highlightedCellX !== undefined && this.highlightedCellY !== undefined) {
-            this.ctx.fillStyle = this.colors.highlighted;
-            this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
+            // Placing prefab?
+            if (this.activePrefab) {
+                this.ctx.fillStyle = this.colors.prefab;
+                Board_1.Board.loop(this.activePrefab, (cell, x, y) => {
+                    if (cell)
+                        this.ctx.fillRect(this.highlightedCellX + x, this.highlightedCellY + y, 1, 1);
+                });
+            }
+            // Highlight cell under mouse
+            else {
+                this.ctx.fillStyle = this.colors.highlighted;
+                this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
+            }
         }
         this.requestID = window.requestAnimationFrame(() => this.draw());
     }
@@ -377,8 +420,10 @@ var Theme;
 })(Theme = exports.Theme || (exports.Theme = {}));
 class UI {
     constructor() {
-        this.toggle = document.getElementById('toggle-controls-btn');
-        this.controls = document.getElementById('controls');
+        this.settings = document.getElementById('settings-btn');
+        this.prefabs = document.getElementById('prefabs-btn');
+        // Settings panel
+        this.controlsPanel = document.getElementById('controls-panel');
         // Renderer
         this.themeDark = document.getElementById('dark-theme-radio');
         this.themeLight = document.getElementById('light-theme-radio');
@@ -397,6 +442,11 @@ class UI {
         this.speed2Simulation = document.getElementById('simulation-speed-2-btn');
         this.speed3Simulation = document.getElementById('simulation-speed-3-btn');
         this.speed4Simulation = document.getElementById('simulation-speed-4-btn');
+        // Prefabs panel
+        this.prefabsPanel = document.getElementById('prefabs-panel');
+        this.cancelPrefab = document.getElementById('cancel-prefab-btn');
+        // Prefabs
+        this.prefabGlider = document.getElementById('prefab-glider-btn');
     }
 }
 exports.UI = UI;
