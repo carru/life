@@ -34,7 +34,21 @@ export class Board {
     }
 
     public step(): void {
-        // let neighbours: number[][] = this.calculateNeighbours();
+        let neighbours: number[][] = this.calculateNeighbours();
+        this.loopAndSetData((cell, x, y) => {
+            /* Rules from wikipedia
+             * https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules */
+
+            // Any live cell with two or three live neighbours survives
+            if (cell && (neighbours[y][x] === 2 || neighbours[y][x] === 3))
+                return 1;
+            // Any dead cell with three live neighbours becomes a live cell
+            else if (!cell && neighbours[y][x] === 3)
+                return 1;
+            // All other live cells die in the next generation. Similarly, all other dead cells stay dead
+            else
+                return 0;
+        });
     }
 
     protected calculateNeighbours(): number[][] {
