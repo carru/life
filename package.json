@@ -13,7 +13,6 @@
   "repository": "github:carru/life",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
-    "@types/jquery": "^3.5.5",
     "css-loader": "^5.2.4",
     "css-minimizer-webpack-plugin": "^2.0.0",
     "html-webpack-plugin": "^5.3.1",
@@ -24,8 +23,5 @@
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3"
-  },
-  "dependencies": {
-    "jquery": "^3.6.0"
   }
 }

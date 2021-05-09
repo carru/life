@@ -1,15 +1,14 @@
-import $ from "jquery";
 import { Board } from "./Board";
 import { Renderer, Theme } from "./Renderer";
 import { SimulationLoop, SimulationSpeed } from "./SimulationLoop";
+import { UI } from "./UI";
 
 export class Controls {
     protected _renderer!: Renderer;
     protected _simulationLoop!: SimulationLoop;
-    protected _boardWidth!: number;
-    protected _boardHeight!: number;
     protected speed: SimulationSpeed;
     protected board: Board;
+    protected ui: UI = new UI;
 
     constructor() {
         this.boardWidth = 50;
@@ -24,35 +23,34 @@ export class Controls {
         this.simulationLoop = new SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
 
-        $("#toggle-controls-btn").on("click", () => this.toggle());
-        $("#clear-board-btn").on("click", () => this.board.clear());
-        $("#randomize-board-btn").on("click", () => this.board.randomize());
-        $("#step-simulation-btn").on("click", () => this.singleStep());
-        $("#board-width").on("change", () => this.updateBoardSize());
-        $("#board-height").on("change", () => this.updateBoardSize());
-        $("input[name='theme']").on("change", (e: JQuery.ChangeEvent) => this.theme = Number(e.currentTarget.value));
+        this.ui.toggle.onclick = () => this.toggle();
+        this.ui.clearBoard.onclick = () => this.board.clear();
+        this.ui.randomizeBoard.onclick = () => this.board.randomize();
+        this.ui.stepSimulation.onclick = () => this.singleStep();
+        this.ui.boardWidth.onchange = () => this.onBoardSizeChange();
+        this.ui.boardHeight.onchange = () => this.onBoardSizeChange();
+        this.ui.themeDark.onchange = (e) => this.onThemeChange((e.target as any).value);
+        this.ui.themeLight.onchange = (e) => this.onThemeChange((e.target as any).value);
     }
 
     public get boardWidth() {
-        return this._boardWidth;
+        return Number(this.ui.boardWidth.value);
     }
 
     public set boardWidth(boardWidth: number) {
-        if (boardWidth > 0) {
-            this._boardWidth = boardWidth;
-            $("#board-width").val(boardWidth);
-        }
+        this.ui.boardWidth.value = String(boardWidth);
     }
 
     public get boardHeight() {
-        return this._boardHeight;
+        return Number(this.ui.boardHeight.value);
     }
 
     public set boardHeight(boardHeight: number) {
-        if (boardHeight > 0) {
-            this._boardHeight = boardHeight;
-            $("#board-height").val(boardHeight);
-        }
+        this.ui.boardHeight.value = String(boardHeight);
+    }
+
+    protected onThemeChange(value: string): void {
+        this.theme = Number(value);
     }
 
     protected set theme(theme: Theme) {
@@ -73,8 +71,8 @@ export class Controls {
 
     protected set renderer(renderer: Renderer) {
         this._renderer = renderer;
-        $("#start-renderer-btn").on("click", () => this._renderer.start());
-        $("#stop-renderer-btn").on("click", () => this._renderer.stop());
+        this.ui.startRenderer.onclick = () => this._renderer.start();
+        this.ui.stopRenderer.onclick = () => this._renderer.stop();
     }
 
     protected get simulationLoop() {
@@ -83,34 +81,36 @@ export class Controls {
 
     protected set simulationLoop(simulationLoop: SimulationLoop) {
         this._simulationLoop = simulationLoop;
-        $("#start-simulation-btn").on("click", () => this._simulationLoop.start());
-        $("#stop-simulation-btn").on("click", () => this._simulationLoop.stop());
-        $("#simulation-speed-1-btn").on("click", () => this.updateSpeed(SimulationSpeed.NORMAL));
-        $("#simulation-speed-2-btn").on("click", () => this.updateSpeed(SimulationSpeed.FAST));
-        $("#simulation-speed-3-btn").on("click", () => this.updateSpeed(SimulationSpeed.FASTER));
-        $("#simulation-speed-4-btn").on("click", () => this.updateSpeed(SimulationSpeed.LUDICROUS));
+        this.ui.startSimulation.onclick = () => this._simulationLoop.start();
+        this.ui.stopSimulation.onclick = () => this._simulationLoop.stop();
+        this.ui.speed1Simulation.onclick = () => this.updateSpeed(SimulationSpeed.NORMAL);
+        this.ui.speed2Simulation.onclick = () => this.updateSpeed(SimulationSpeed.FAST);
+        this.ui.speed3Simulation.onclick = () => this.updateSpeed(SimulationSpeed.FASTER);
+        this.ui.speed4Simulation.onclick = () => this.updateSpeed(SimulationSpeed.LUDICROUS);
     }
 
     protected toggle() {
-        $("#controls").toggle();
+        if (this.ui.controls) {
+            if (this.ui.controls.style.visibility === 'hidden')
+                this.ui.controls.style.visibility = 'visible';
+            else
+                this.ui.controls.style.visibility = 'hidden';
+        }
     }
 
     protected singleStep(): void {
-        this._simulationLoop.stop();
+        this.simulationLoop.stop();
         this.board.step();
     }
 
     protected updateSpeed(speed: SimulationSpeed): void {
         this.speed = speed;
-        this._simulationLoop.stop();
-        this._simulationLoop.speed = this.speed;
-        this._simulationLoop.start();
+        this.simulationLoop.stop();
+        this.simulationLoop.speed = this.speed;
+        this.simulationLoop.start();
     }
 
-    protected updateBoardSize(): void {
-        this._boardWidth = Number($("#board-width").val());
-        this._boardHeight = Number($("#board-height").val());
-
+    protected onBoardSizeChange(): void {
         this.replaceBoard(this.board.copyAndResize(this.boardWidth, this.boardHeight));
     }
 
