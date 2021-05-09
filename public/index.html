@@ -14,24 +14,26 @@
   <button id="toggle-controls-btn">Show/Hide controls</button>
   <div id="controls">
     <div id="render-settings">
-      <p>Renderer settings</p>
+      <h4>Renderer settings</h4>
       <button id="start-renderer-btn">Start</button>
       <button id="stop-renderer-btn">Stop</button>
     </div>
     <div id="board-settings">
-      <p>Board settings</p>
+      <h4>Board settings</h4>
       <p>Size</p>
-      <input type="number" id="board-width" min="0" step="5">
+      <input type="number" class="board-size-input" id="board-width" min="0" step="5">
       x
-      <input type="number" id="board-height" min="0" step="5">
+      <input type="number" class="board-size-input" id="board-height" min="0" step="5">
     </div>
     <div id="simulation-settings">
-      <p>Simulation settings</p>
+      <h4>Simulation settings</h4>
       <button id="start-simulation-btn">Start</button>
       <button id="stop-simulation-btn">Stop</button>
+      <p>Speed</p>
       <button id="simulation-speed-1-btn">></button>
       <button id="simulation-speed-2-btn">>></button>
       <button id="simulation-speed-3-btn">>>></button>
+      <button id="simulation-speed-4-btn">🔥🔥</button>
     </div>
   </div>
   <canvas id="board"></canvas>

@@ -2,7 +2,8 @@ import { Board } from "./Board";
 
 export enum SimulationSpeed {
     NORMAL = 1000,
-    FAST = 250,
+    FAST = 400,
+    FASTER = 100,
     LUDICROUS = 0
 }
 

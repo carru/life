@@ -13,8 +13,8 @@ export class Controls {
 
     constructor() {
         $("#toggle-controls-btn").on("click", () => this.toggle());
-        this.boardWidth = 10;
-        this.boardHeight = 10;
+        this.boardWidth = 50;
+        this.boardHeight = 50;
         $("#board-width").on("change", () => this.updateBoardSize());
         $("#board-height").on("change", () => this.updateBoardSize());
 
@@ -70,7 +70,8 @@ export class Controls {
         $("#stop-simulation-btn").on("click", () => this._simulationLoop.stop());
         $("#simulation-speed-1-btn").on("click", () => this.updateSpeed(SimulationSpeed.NORMAL));
         $("#simulation-speed-2-btn").on("click", () => this.updateSpeed(SimulationSpeed.FAST));
-        $("#simulation-speed-3-btn").on("click", () => this.updateSpeed(SimulationSpeed.LUDICROUS));
+        $("#simulation-speed-3-btn").on("click", () => this.updateSpeed(SimulationSpeed.FASTER));
+        $("#simulation-speed-4-btn").on("click", () => this.updateSpeed(SimulationSpeed.LUDICROUS));
     }
 
     protected toggle() {
