@@ -176,22 +176,38 @@ const UI_1 = __webpack_require__(191);
 class Controls {
     constructor() {
         this.ui = new UI_1.UI;
+        // Defaults
         this.boardWidth = 50;
         this.boardHeight = 50;
+        this.speed = SimulationLoop_1.SimulationSpeed.FAST;
+        // Initialize board
         this.board = new Board_1.Board(this.boardWidth, this.boardHeight);
+        this.board.randomize();
+        // Initialize renderer
         this.renderer = new Renderer_1.Renderer(this.board);
         this.renderer.start();
-        this.speed = SimulationLoop_1.SimulationSpeed.NORMAL;
+        // Initialize simulation loop
         this.simulationLoop = new SimulationLoop_1.SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
+        this.setUiEvents();
+    }
+    setUiEvents() {
         this.ui.toggle.onclick = () => this.toggle();
-        this.ui.clearBoard.onclick = () => this.board.clear();
-        this.ui.randomizeBoard.onclick = () => this.board.randomize();
-        this.ui.stepSimulation.onclick = () => this.singleStep();
-        this.ui.boardWidth.onchange = () => this.onBoardSizeChange();
-        this.ui.boardHeight.onchange = () => this.onBoardSizeChange();
         this.ui.themeDark.onchange = (e) => this.onThemeChange(e.target.value);
         this.ui.themeLight.onchange = (e) => this.onThemeChange(e.target.value);
+        this.ui.startRenderer.onclick = () => this.renderer.start();
+        this.ui.stopRenderer.onclick = () => this.renderer.stop();
+        this.ui.clearBoard.onclick = () => this.board.clear();
+        this.ui.randomizeBoard.onclick = () => this.board.randomize();
+        this.ui.boardWidth.onchange = () => this.onBoardSizeChange();
+        this.ui.boardHeight.onchange = () => this.onBoardSizeChange();
+        this.ui.startSimulation.onclick = () => this.simulationLoop.start();
+        this.ui.stopSimulation.onclick = () => this.simulationLoop.stop();
+        this.ui.stepSimulation.onclick = () => this.singleStep();
+        this.ui.speed1Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.NORMAL;
+        this.ui.speed2Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.FAST;
+        this.ui.speed3Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.FASTER;
+        this.ui.speed4Simulation.onclick = () => this.speed = SimulationLoop_1.SimulationSpeed.LUDICROUS;
     }
     get boardWidth() {
         return Number(this.ui.boardWidth.value);
@@ -219,26 +235,6 @@ class Controls {
                 break;
         }
     }
-    get renderer() {
-        return this._renderer;
-    }
-    set renderer(renderer) {
-        this._renderer = renderer;
-        this.ui.startRenderer.onclick = () => this._renderer.start();
-        this.ui.stopRenderer.onclick = () => this._renderer.stop();
-    }
-    get simulationLoop() {
-        return this._simulationLoop;
-    }
-    set simulationLoop(simulationLoop) {
-        this._simulationLoop = simulationLoop;
-        this.ui.startSimulation.onclick = () => this._simulationLoop.start();
-        this.ui.stopSimulation.onclick = () => this._simulationLoop.stop();
-        this.ui.speed1Simulation.onclick = () => this.updateSpeed(SimulationLoop_1.SimulationSpeed.NORMAL);
-        this.ui.speed2Simulation.onclick = () => this.updateSpeed(SimulationLoop_1.SimulationSpeed.FAST);
-        this.ui.speed3Simulation.onclick = () => this.updateSpeed(SimulationLoop_1.SimulationSpeed.FASTER);
-        this.ui.speed4Simulation.onclick = () => this.updateSpeed(SimulationLoop_1.SimulationSpeed.LUDICROUS);
-    }
     toggle() {
         if (this.ui.controls) {
             if (this.ui.controls.style.visibility === 'hidden')
@@ -251,11 +247,16 @@ class Controls {
         this.simulationLoop.stop();
         this.board.step();
     }
-    updateSpeed(speed) {
-        this.speed = speed;
-        this.simulationLoop.stop();
-        this.simulationLoop.speed = this.speed;
-        this.simulationLoop.start();
+    get speed() {
+        return this._speed;
+    }
+    set speed(speed) {
+        this._speed = speed;
+        if (this.simulationLoop) {
+            this.simulationLoop.stop();
+            this.simulationLoop.speed = speed;
+            this.simulationLoop.start();
+        }
     }
     onBoardSizeChange() {
         this.replaceBoard(this.board.copyAndResize(this.boardWidth, this.boardHeight));
