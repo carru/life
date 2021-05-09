@@ -10,10 +10,7 @@
   },
   "author": "carru",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/TODO"
-  },
+  "repository": "github:carru/life",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "@types/jquery": "^3.5.5",
