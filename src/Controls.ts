@@ -26,6 +26,7 @@ export class Controls {
         
         $("#toggle-controls-btn").on("click", () => this.toggle());
         $("#clear-board-btn").on("click", () => this.board.clear());
+        $("#randomize-board-btn").on("click", () => this.board.randomize());
         $("#board-width").on("change", () => this.updateBoardSize());
         $("#board-height").on("change", () => this.updateBoardSize());
     }
