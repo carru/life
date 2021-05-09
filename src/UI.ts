@@ -9,8 +9,8 @@ export class UI {
     public controls = document.getElementById('controls') as HTMLElement ;
 
     // Renderer
-    public themeDark = document.getElementById('dark-theme') as HTMLInputElement;
-    public themeLight = document.getElementById('light-theme') as HTMLInputElement;
+    public themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
+    public themeLight = document.getElementById('light-theme-radio') as HTMLInputElement;
     public startRenderer = document.getElementById('start-renderer-btn') as HTMLButtonElement;
     public stopRenderer = document.getElementById('stop-renderer-btn') as HTMLButtonElement;
 
