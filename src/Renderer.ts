@@ -58,7 +58,7 @@ export class Renderer {
 
         // Draw active cells
         this.ctx.fillStyle = this.colors.active;
-        Board.loop(this.board.data, (cell, x, y) => {
+        this.board.loopData((cell, x, y) => {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);
         })

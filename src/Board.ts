@@ -33,6 +33,10 @@ export class Board {
         }
     }
 
+    public loopData(callback: (cell: number, x: number, y: number) => void): void {
+        Board.loop(this.data, callback);
+    }
+
     public static loop(data: number[][], callback: (cell: number, x: number, y: number) => void): void {
         let width: number = data[0].length;
         let height: number = data.length;
