@@ -35,6 +35,9 @@ class Board {
             }
         }
     }
+    loopData(callback) {
+        Board.loop(this.data, callback);
+    }
     static loop(data, callback) {
         let width = data[0].length;
         let height = data.length;
@@ -64,73 +67,44 @@ class Board {
         });
     }
     calculateNeighbours() {
-        // TODO this spaghetti is embarrasing; refactor to use loopAndSet
-        let width = this.width;
-        let height = this.height;
-        // 0 based width/height
-        let w = width - 1;
-        let h = height - 1;
-        let neighbours = this.newBlankGrid(width, height);
-        // Corners
-        neighbours[0][0] =
-            this.data[0][1] +
-                this.data[1][0] +
-                this.data[1][1];
-        neighbours[h][0] =
-            this.data[h][1] +
-                this.data[h - 1][0] +
-                this.data[h - 1][1];
-        neighbours[0][w] =
-            this.data[0][w - 1] +
-                this.data[1][w] +
-                this.data[1][w - 1];
-        neighbours[h][w] =
-            this.data[h][w - 1] +
-                this.data[h - 1][w] +
-                this.data[h - 1][w - 1];
-        // Sides
-        for (let y = 1; y < h; y++) {
-            neighbours[y][0] =
-                this.data[y - 1][0] +
-                    this.data[y - 1][1] +
-                    this.data[y][1] +
-                    this.data[y + 1][1] +
-                    this.data[y + 1][0];
-            neighbours[y][w] =
-                this.data[y - 1][w] +
-                    this.data[y - 1][w - 1] +
-                    this.data[y][w - 1] +
-                    this.data[y + 1][w - 1] +
-                    this.data[y + 1][w];
-        }
-        for (let x = 1; x < w; x++) {
-            neighbours[0][x] =
-                this.data[0][x - 1] +
-                    this.data[1][x - 1] +
-                    this.data[1][x] +
-                    this.data[1][x + 1] +
-                    this.data[0][x + 1];
-            neighbours[h][x] =
-                this.data[h][x - 1] +
-                    this.data[h - 1][x - 1] +
-                    this.data[h - 1][x] +
-                    this.data[h - 1][x + 1] +
-                    this.data[h][x + 1];
-        }
-        // Inside
-        for (let y = 1; y < h; y++) {
-            for (let x = 1; x < w; x++) {
-                neighbours[y][x] =
-                    this.data[y - 1][x - 1] +
-                        this.data[y - 1][x] +
-                        this.data[y - 1][x + 1] +
-                        this.data[y][x - 1] +
-                        this.data[y][x + 1] +
-                        this.data[y + 1][x - 1] +
-                        this.data[y + 1][x] +
-                        this.data[y + 1][x + 1];
+        let neighbours = this.newBlankGrid(this.width, this.height);
+        Board.loopAndSet(neighbours, (cell, x, y) => {
+            let neighboursCount = 0;
+            // Use try/catches for when trying to read outside the grid
+            try {
+                neighboursCount += this.data[y - 1][x - 1];
             }
-        }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y - 1][x];
+            }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y - 1][x + 1];
+            }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y][x - 1];
+            }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y][x + 1];
+            }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y + 1][x - 1];
+            }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y + 1][x];
+            }
+            catch (error) { }
+            try {
+                neighboursCount += this.data[y + 1][x + 1];
+            }
+            catch (error) { }
+            return neighboursCount;
+        });
         return neighbours;
     }
     normalize() {
@@ -283,12 +257,11 @@ exports.Controls = Controls;
 /***/ }),
 
 /***/ 570:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Renderer = void 0;
-const Board_1 = __webpack_require__(336);
 class Renderer {
     constructor(board) {
         this.canvas = document.getElementById('board');
@@ -323,7 +296,7 @@ class Renderer {
         this.scaleToBoardSize();
         // Draw active cells
         this.ctx.fillStyle = this.colors.active;
-        Board_1.Board.loop(this.board.data, (cell, x, y) => {
+        this.board.loopData((cell, x, y) => {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);
         });
