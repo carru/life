@@ -4,33 +4,53 @@ import { SimulationLoop, SimulationSpeed } from "./SimulationLoop";
 import { UI } from "./UI";
 
 export class Controls {
-    protected _renderer!: Renderer;
-    protected _simulationLoop!: SimulationLoop;
-    protected speed: SimulationSpeed;
+    protected renderer: Renderer;
+    protected simulationLoop: SimulationLoop;
     protected board: Board;
     protected ui: UI = new UI;
+    protected _speed!: SimulationSpeed;
 
     constructor() {
+        // Defaults
         this.boardWidth = 50;
         this.boardHeight = 50;
+        this.speed = SimulationSpeed.FAST;
 
+        // Initialize board
         this.board = new Board(this.boardWidth, this.boardHeight);
+        this.board.randomize();
 
+        // Initialize renderer
         this.renderer = new Renderer(this.board);
         this.renderer.start();
 
-        this.speed = SimulationSpeed.NORMAL;
+        // Initialize simulation loop
         this.simulationLoop = new SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
 
+        this.setUiEvents();
+    }
+    
+    protected setUiEvents(): void {
         this.ui.toggle.onclick = () => this.toggle();
-        this.ui.clearBoard.onclick = () => this.board.clear();
-        this.ui.randomizeBoard.onclick = () => this.board.randomize();
-        this.ui.stepSimulation.onclick = () => this.singleStep();
-        this.ui.boardWidth.onchange = () => this.onBoardSizeChange();
-        this.ui.boardHeight.onchange = () => this.onBoardSizeChange();
+        
         this.ui.themeDark.onchange = (e) => this.onThemeChange((e.target as any).value);
         this.ui.themeLight.onchange = (e) => this.onThemeChange((e.target as any).value);
+        this.ui.startRenderer.onclick = () => this.renderer.start();
+        this.ui.stopRenderer.onclick = () => this.renderer.stop();
+
+        this.ui.clearBoard.onclick = () => this.board.clear();
+        this.ui.randomizeBoard.onclick = () => this.board.randomize();
+        this.ui.boardWidth.onchange = () => this.onBoardSizeChange();
+        this.ui.boardHeight.onchange = () => this.onBoardSizeChange();
+
+        this.ui.startSimulation.onclick = () => this.simulationLoop.start();
+        this.ui.stopSimulation.onclick = () => this.simulationLoop.stop();
+        this.ui.stepSimulation.onclick = () => this.singleStep();
+        this.ui.speed1Simulation.onclick = () => this.speed = SimulationSpeed.NORMAL;
+        this.ui.speed2Simulation.onclick = () => this.speed = SimulationSpeed.FAST;
+        this.ui.speed3Simulation.onclick = () => this.speed = SimulationSpeed.FASTER;
+        this.ui.speed4Simulation.onclick = () => this.speed = SimulationSpeed.LUDICROUS;
     }
 
     public get boardWidth() {
@@ -65,30 +85,6 @@ export class Controls {
         }
     }
 
-    protected get renderer() {
-        return this._renderer;
-    }
-
-    protected set renderer(renderer: Renderer) {
-        this._renderer = renderer;
-        this.ui.startRenderer.onclick = () => this._renderer.start();
-        this.ui.stopRenderer.onclick = () => this._renderer.stop();
-    }
-
-    protected get simulationLoop() {
-        return this._simulationLoop;
-    }
-
-    protected set simulationLoop(simulationLoop: SimulationLoop) {
-        this._simulationLoop = simulationLoop;
-        this.ui.startSimulation.onclick = () => this._simulationLoop.start();
-        this.ui.stopSimulation.onclick = () => this._simulationLoop.stop();
-        this.ui.speed1Simulation.onclick = () => this.updateSpeed(SimulationSpeed.NORMAL);
-        this.ui.speed2Simulation.onclick = () => this.updateSpeed(SimulationSpeed.FAST);
-        this.ui.speed3Simulation.onclick = () => this.updateSpeed(SimulationSpeed.FASTER);
-        this.ui.speed4Simulation.onclick = () => this.updateSpeed(SimulationSpeed.LUDICROUS);
-    }
-
     protected toggle() {
         if (this.ui.controls) {
             if (this.ui.controls.style.visibility === 'hidden')
@@ -103,11 +99,17 @@ export class Controls {
         this.board.step();
     }
 
-    protected updateSpeed(speed: SimulationSpeed): void {
-        this.speed = speed;
-        this.simulationLoop.stop();
-        this.simulationLoop.speed = this.speed;
-        this.simulationLoop.start();
+    protected get speed() {
+        return this._speed;
+    }
+    
+    protected set speed(speed: SimulationSpeed) {
+        this._speed = speed;
+        if (this.simulationLoop) {
+            this.simulationLoop.stop();
+            this.simulationLoop.speed = speed;
+            this.simulationLoop.start();
+        }
     }
 
     protected onBoardSizeChange(): void {
