@@ -10921,6 +10921,15 @@ class Board {
             }
         }
     }
+    static loop(data, callback) {
+        let width = data[0].length;
+        let height = data.length;
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                callback(data[y][x], x, y);
+            }
+        }
+    }
     newBlankGrid(width, height) {
         return new Array(height).fill(0).map(() => new Array(width).fill(0));
     }
@@ -11073,6 +11082,7 @@ class Controls {
         jquery_1.default("#step-simulation-btn").on("click", () => this.singleStep());
         jquery_1.default("#board-width").on("change", () => this.updateBoardSize());
         jquery_1.default("#board-height").on("change", () => this.updateBoardSize());
+        jquery_1.default("input[name='theme']").on("change", (e) => this.theme = Number(e.currentTarget.value));
     }
     get boardWidth() {
         return this._boardWidth;
@@ -11090,6 +11100,17 @@ class Controls {
         if (boardHeight > 0) {
             this._boardHeight = boardHeight;
             jquery_1.default("#board-height").val(boardHeight);
+        }
+    }
+    set theme(theme) {
+        this.renderer.theme = theme;
+        switch (theme) {
+            case Renderer_1.Theme.DARK:
+                document.body.className = 'dark-theme';
+                break;
+            case Renderer_1.Theme.LIGHT:
+                document.body.className = 'light-theme';
+                break;
         }
     }
     get renderer() {
@@ -11146,42 +11167,52 @@ exports.Controls = Controls;
 /***/ }),
 
 /***/ 570:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Renderer = void 0;
+exports.Renderer = exports.Theme = void 0;
+const Board_1 = __webpack_require__(336);
+var Theme;
+(function (Theme) {
+    Theme[Theme["DARK"] = 1] = "DARK";
+    Theme[Theme["LIGHT"] = 2] = "LIGHT";
+})(Theme = exports.Theme || (exports.Theme = {}));
 class Renderer {
     constructor(board) {
-        this.stopFlag = false;
+        this.theme = Theme.DARK;
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
         if (board)
             this.board = board;
     }
     start() {
-        window.requestAnimationFrame(() => this.draw());
+        this.requestID = window.requestAnimationFrame(() => this.draw());
     }
     stop() {
-        this.stopFlag = true;
+        if (this.requestID) {
+            window.cancelAnimationFrame(this.requestID);
+            this.requestID = undefined;
+        }
     }
     draw() {
-        if (this.stopFlag) {
-            this.stopFlag = false;
-            return;
-        }
         if (!this.board)
             return;
         this.scaleToBoardSize();
-        this.ctx.fillStyle = 'black';
-        this.board.data.forEach((row, y) => {
-            row.forEach((cell, x) => {
-                if (cell)
-                    this.ctx.fillRect(x, y, 1, 1);
-            });
+        switch (this.theme) {
+            case Theme.LIGHT:
+                this.ctx.fillStyle = 'black';
+                break;
+            case Theme.DARK:
+                this.ctx.fillStyle = 'white';
+                break;
+        }
+        Board_1.Board.loop(this.board.data, (cell, x, y) => {
+            if (cell)
+                this.ctx.fillRect(x, y, 1, 1);
         });
-        window.requestAnimationFrame(() => this.draw());
+        this.requestID = window.requestAnimationFrame(() => this.draw());
     }
     scaleToBoardSize() {
         this.ctx.restore();
