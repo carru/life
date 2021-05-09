@@ -10904,11 +10904,17 @@ class Board {
             this.data = new Array(height).fill(0).map(() => new Array(width).fill(0));
     }
     randomize() {
+        this.loopAndSet(-1);
+    }
+    clear() {
+        this.loopAndSet(0);
+    }
+    loopAndSet(value) {
         let width = this.width;
         let height = this.height;
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-                this.data[y][x] = Math.round(Math.random());
+                this.data[y][x] = (value === -1) ? Math.round(Math.random()) : value;
             }
         }
     }
@@ -10965,17 +10971,19 @@ const Renderer_1 = __webpack_require__(570);
 const SimulationLoop_1 = __webpack_require__(945);
 class Controls {
     constructor() {
-        jquery_1.default("#toggle-controls-btn").on("click", () => this.toggle());
         this.boardWidth = 50;
         this.boardHeight = 50;
-        jquery_1.default("#board-width").on("change", () => this.updateBoardSize());
-        jquery_1.default("#board-height").on("change", () => this.updateBoardSize());
         this.board = new Board_1.Board(this.boardWidth, this.boardHeight);
         this.renderer = new Renderer_1.Renderer(this.board);
         this.renderer.start();
         this.speed = SimulationLoop_1.SimulationSpeed.NORMAL;
         this.simulationLoop = new SimulationLoop_1.SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
+        jquery_1.default("#toggle-controls-btn").on("click", () => this.toggle());
+        jquery_1.default("#clear-board-btn").on("click", () => this.board.clear());
+        jquery_1.default("#randomize-board-btn").on("click", () => this.board.randomize());
+        jquery_1.default("#board-width").on("change", () => this.updateBoardSize());
+        jquery_1.default("#board-height").on("change", () => this.updateBoardSize());
     }
     get boardWidth() {
         return this._boardWidth;
