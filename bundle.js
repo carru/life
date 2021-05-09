@@ -20,6 +20,9 @@ class Board {
     clear() {
         this.loopAndSetData(() => { return 0; });
     }
+    toggleCell(x, y) {
+        this.data[y][x] = (this.data[y][x]) ? 0 : 1;
+    }
     loopAndSetData(callback) {
         Board.loopAndSet(this.data, callback);
     }
@@ -193,8 +196,8 @@ class Controls {
     }
     setUiEvents() {
         this.ui.toggle.onclick = () => this.toggle();
-        this.ui.themeDark.onchange = (e) => this.onThemeChange(e.target.value);
-        this.ui.themeLight.onchange = (e) => this.onThemeChange(e.target.value);
+        this.ui.themeDark.onchange = (e) => this.theme = e.target.value;
+        this.ui.themeLight.onchange = (e) => this.theme = e.target.value;
         this.ui.startRenderer.onclick = () => this.renderer.start();
         this.ui.stopRenderer.onclick = () => this.renderer.stop();
         this.ui.clearBoard.onclick = () => this.board.clear();
@@ -221,26 +224,22 @@ class Controls {
     set boardHeight(boardHeight) {
         this.ui.boardHeight.value = String(boardHeight);
     }
-    onThemeChange(value) {
-        this.theme = Number(value);
-    }
     set theme(theme) {
-        this.renderer.theme = theme;
         switch (theme) {
-            case Renderer_1.Theme.DARK:
+            case UI_1.Theme.DARK:
                 document.body.className = 'dark-theme';
                 break;
-            case Renderer_1.Theme.LIGHT:
+            case UI_1.Theme.LIGHT:
                 document.body.className = 'light-theme';
                 break;
         }
     }
     toggle() {
         if (this.ui.controls) {
-            if (this.ui.controls.style.visibility === 'hidden')
-                this.ui.controls.style.visibility = 'visible';
+            if (this.ui.controls.className === 'hidden')
+                this.ui.controls.className = '';
             else
-                this.ui.controls.style.visibility = 'hidden';
+                this.ui.controls.className = 'hidden';
         }
     }
     singleStep() {
@@ -281,20 +280,16 @@ exports.Controls = Controls;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Renderer = exports.Theme = void 0;
+exports.Renderer = void 0;
 const Board_1 = __webpack_require__(336);
-var Theme;
-(function (Theme) {
-    Theme[Theme["DARK"] = 1] = "DARK";
-    Theme[Theme["LIGHT"] = 2] = "LIGHT";
-})(Theme = exports.Theme || (exports.Theme = {}));
 class Renderer {
     constructor(board) {
-        this.theme = Theme.DARK;
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
         if (board)
             this.board = board;
+        this.canvas.onmousemove = (e) => this.onMouseMove(e.clientX, e.clientY);
+        this.canvas.onclick = () => this.onMouseClick();
     }
     start() {
         this.requestID = window.requestAnimationFrame(() => this.draw());
@@ -305,29 +300,42 @@ class Renderer {
             this.requestID = undefined;
         }
     }
+    onMouseMove(x, y) {
+        if (this.scaleFactorX && this.scaleFactorY) {
+            this.highlightedCellX = Math.floor(x / this.scaleFactorX);
+            this.highlightedCellY = Math.floor(y / this.scaleFactorY);
+        }
+    }
+    onMouseClick() {
+        if (this.board && this.highlightedCellX !== undefined && this.highlightedCellY !== undefined)
+            this.board.toggleCell(this.highlightedCellX, this.highlightedCellY);
+    }
     draw() {
         if (!this.board)
             return;
         this.scaleToBoardSize();
-        switch (this.theme) {
-            case Theme.LIGHT:
-                this.ctx.fillStyle = 'black';
-                break;
-            case Theme.DARK:
-                this.ctx.fillStyle = 'white';
-                break;
-        }
+        // Draw active cells
+        this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--cell');
         Board_1.Board.loop(this.board.data, (cell, x, y) => {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);
         });
+        // Draw highlighted cell
+        if (this.highlightedCellX !== undefined && this.highlightedCellY !== undefined) {
+            this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--highlightedCell');
+            this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
+        }
         this.requestID = window.requestAnimationFrame(() => this.draw());
     }
     scaleToBoardSize() {
+        if (!this.board)
+            return;
         this.ctx.restore();
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
-        this.ctx.scale(this.canvas.width / this.board.width, this.canvas.height / this.board.height);
+        this.scaleFactorX = this.canvas.width / this.board.width;
+        this.scaleFactorY = this.canvas.height / this.board.height;
+        this.ctx.scale(this.scaleFactorX, this.scaleFactorY);
     }
 }
 exports.Renderer = Renderer;
@@ -381,7 +389,12 @@ exports.SimulationLoop = SimulationLoop;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UI = void 0;
+exports.UI = exports.Theme = void 0;
+var Theme;
+(function (Theme) {
+    Theme["DARK"] = "1";
+    Theme["LIGHT"] = "2";
+})(Theme = exports.Theme || (exports.Theme = {}));
 class UI {
     constructor() {
         this.toggle = document.getElementById('toggle-controls-btn');
