@@ -82,10 +82,10 @@ export class Controls {
 
     protected toggle() {
         if (this.ui.controls) {
-            if (this.ui.controls.style.visibility === 'hidden')
-                this.ui.controls.style.visibility = 'visible';
+            if (this.ui.controls.className === 'hidden')
+                this.ui.controls.className = '';
             else
-                this.ui.controls.style.visibility = 'hidden';
+                this.ui.controls.className = 'hidden';
         }
     }
 

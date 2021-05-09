@@ -1,4 +1,5 @@
 .dark-theme {
+    --highlightedCell: rgba(0, 255, 76, 0.75);
     --cell: white;
     --text: white;
     --background: black;
@@ -6,6 +7,7 @@
 }
 
 .light-theme {
+    --highlightedCell: rgba(0, 255, 76, 0.75);
     --cell: black;
     --text: black;
     --background: white;
@@ -27,9 +29,14 @@ body {
     z-index: -1;
 }
 
+#controls.hidden {
+    display: none;
+}
+
 #controls {
+    position: absolute;
     background-color: var(--controls-background);
-    display: table;
+    width: fit-content;
 }
 
 p, h4, label {
