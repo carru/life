@@ -18,6 +18,7 @@ export class Renderer {
             this.board = board;
 
         this.canvas.onmousemove = (e) => this.onMouseMove(e.clientX, e.clientY);
+        this.canvas.onclick = () => this.onMouseClick();
     }
 
     public start(): void {
@@ -36,6 +37,11 @@ export class Renderer {
             this.highlightedCellX = Math.floor(x / this.scaleFactorX);
             this.highlightedCellY = Math.floor(y / this.scaleFactorY);
         }
+    }
+
+    protected onMouseClick(): void {
+        if (this.board && this.highlightedCellX !== undefined && this.highlightedCellY !== undefined)
+            this.board.toggleCell(this.highlightedCellX, this.highlightedCellY);
     }
 
     protected draw(): void {

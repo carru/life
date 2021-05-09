@@ -14,6 +14,10 @@ export class Board {
         this.loopAndSetData(() => { return 0 });
     }
 
+    public toggleCell(x: number, y: number): void {
+        this.data[y][x] = (this.data[y][x]) ? 0 : 1;
+    }
+
     protected loopAndSetData(callback: (cell: number, x: number, y: number) => number): void {
         Board.loopAndSet(this.data, callback);
     }
