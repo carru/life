@@ -20,10 +20,11 @@ body {
     margin: 0;
     background-color: var(--background);
     color: var(--text);
+    position: fixed;
 }
 
 #board {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     display: block;
@@ -32,13 +33,13 @@ body {
     z-index: -1;
 }
 
-#controls {
-    width: fit-content;
+#prefabs-btn {
+    position: fixed;
+    right: 0;
 }
 
-#prefabs {
+#prefabs-panel {
     right: 0;
-    width: 20em;
 }
 
 .hidden {
@@ -46,7 +47,9 @@ body {
 }
 
 .panel {
-    position: absolute;
+    padding: .5em;
+    position: fixed;
+    width: fit-content;
     background-color: var(--controls-background);
 }
 

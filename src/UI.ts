@@ -8,7 +8,7 @@ export class UI {
     public prefabs = document.getElementById('prefabs-btn') as HTMLButtonElement;
 
     // Settings panel
-    public controlsPanel = document.getElementById('controls') as HTMLElement ;
+    public controlsPanel = document.getElementById('controls-panel') as HTMLElement ;
 
     // Renderer
     public themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
@@ -32,5 +32,5 @@ export class UI {
     public speed4Simulation = document.getElementById('simulation-speed-4-btn') as HTMLButtonElement;
 
     // Prefabs panel
-    public prefabsPanel = document.getElementById('prefabs') as HTMLElement ;
+    public prefabsPanel = document.getElementById('prefabs-panel') as HTMLElement ;
 }
