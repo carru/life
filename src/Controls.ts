@@ -1,4 +1,5 @@
 import { Board } from "./Board";
+import { Prefabs } from "./Prefabs";
 import { Renderer } from "./Renderer";
 import { SimulationLoop, SimulationSpeed } from "./SimulationLoop";
 import { Theme, UI } from "./UI";
@@ -53,6 +54,9 @@ export class Controls {
         this.ui.speed2Simulation.onclick = () => this.speed = SimulationSpeed.FAST;
         this.ui.speed3Simulation.onclick = () => this.speed = SimulationSpeed.FASTER;
         this.ui.speed4Simulation.onclick = () => this.speed = SimulationSpeed.LUDICROUS;
+
+        this.ui.cancelPrefab.onclick = () => this.renderer.activePrefab = undefined;
+        this.ui.prefabGlider.onclick = () => this.renderer.activePrefab = Prefabs.glider;
     }
 
     public get boardWidth() {

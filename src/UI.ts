@@ -30,7 +30,11 @@ export class UI {
     public speed2Simulation = document.getElementById('simulation-speed-2-btn') as HTMLButtonElement;
     public speed3Simulation = document.getElementById('simulation-speed-3-btn') as HTMLButtonElement;
     public speed4Simulation = document.getElementById('simulation-speed-4-btn') as HTMLButtonElement;
-
+    
     // Prefabs panel
     public prefabsPanel = document.getElementById('prefabs-panel') as HTMLElement ;
+
+    public cancelPrefab = document.getElementById('cancel-prefab-btn') as HTMLButtonElement;
+    // Prefabs
+    public prefabGlider = document.getElementById('prefab-glider-btn') as HTMLButtonElement;
 }

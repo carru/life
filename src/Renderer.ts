@@ -9,6 +9,7 @@ interface Colors {
 export class Renderer {
     public board: Board | undefined;
     public colors!: Colors;
+    public activePrefab: number[][] | undefined;
     protected canvas: HTMLCanvasElement;
     protected ctx: CanvasRenderingContext2D;
     protected requestID: number | undefined;
@@ -63,10 +64,21 @@ export class Renderer {
                 this.ctx.fillRect(x, y, 1, 1);
         })
 
-        // Draw highlighted cell
+        // Is mouse over canvas?
         if (this.highlightedCellX !== undefined && this.highlightedCellY !== undefined) {
-            this.ctx.fillStyle = this.colors.highlighted;
-            this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
+            // Placing prefab?
+            if (this.activePrefab) {
+                this.ctx.fillStyle = this.colors.prefab;
+                Board.loop(this.activePrefab, (cell, x, y) => {
+                    if (cell)
+                        this.ctx.fillRect(this.highlightedCellX! + x, this.highlightedCellY! + y, 1, 1);
+                });
+            }
+            // Highlight cell under mouse
+            else {
+                this.ctx.fillStyle = this.colors.highlighted;
+                this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
+            }
         }
 
         this.requestID = window.requestAnimationFrame(() => this.draw());
