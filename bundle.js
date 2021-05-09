@@ -189,6 +189,7 @@ class Controls {
         // Initialize renderer
         this.renderer = new Renderer_1.Renderer(this.board);
         this.renderer.start();
+        this.theme = UI_1.Theme.DARK;
         // Initialize simulation loop
         this.simulationLoop = new SimulationLoop_1.SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
@@ -233,6 +234,12 @@ class Controls {
                 document.body.className = 'light-theme';
                 break;
         }
+        let style = getComputedStyle(document.body);
+        this.renderer.colors = {
+            active: style.getPropertyValue('--activeCell'),
+            highlighted: style.getPropertyValue('--highlightedCell'),
+            prefab: style.getPropertyValue('--prefabCell'),
+        };
     }
     toggle() {
         if (this.ui.controls) {
@@ -315,14 +322,14 @@ class Renderer {
             return;
         this.scaleToBoardSize();
         // Draw active cells
-        this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--cell');
+        this.ctx.fillStyle = this.colors.active;
         Board_1.Board.loop(this.board.data, (cell, x, y) => {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);
         });
         // Draw highlighted cell
         if (this.highlightedCellX !== undefined && this.highlightedCellY !== undefined) {
-            this.ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--highlightedCell');
+            this.ctx.fillStyle = this.colors.highlighted;
             this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
         }
         this.requestID = window.requestAnimationFrame(() => this.draw());
@@ -400,8 +407,8 @@ class UI {
         this.toggle = document.getElementById('toggle-controls-btn');
         this.controls = document.getElementById('controls');
         // Renderer
-        this.themeDark = document.getElementById('dark-theme');
-        this.themeLight = document.getElementById('light-theme');
+        this.themeDark = document.getElementById('dark-theme-radio');
+        this.themeLight = document.getElementById('light-theme-radio');
         this.startRenderer = document.getElementById('start-renderer-btn');
         this.stopRenderer = document.getElementById('stop-renderer-btn');
         // Board
