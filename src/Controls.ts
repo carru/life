@@ -81,7 +81,7 @@ export class Controls {
         }
 
         let style = getComputedStyle(document.body);
-        this.renderer.colours = {
+        this.renderer.colors = {
             active: style.getPropertyValue('--activeCell'),
             highlighted: style.getPropertyValue('--highlightedCell'),
             prefab: style.getPropertyValue('--prefabCell'),

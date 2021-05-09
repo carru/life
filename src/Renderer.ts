@@ -1,6 +1,6 @@
 import { Board } from "./Board";
 
-interface Colours {
+interface Colors {
     active: string,
     highlighted: string,
     prefab: string
@@ -8,7 +8,7 @@ interface Colours {
 
 export class Renderer {
     public board: Board | undefined;
-    public colours!: Colours;
+    public colors!: Colors;
     protected canvas: HTMLCanvasElement;
     protected ctx: CanvasRenderingContext2D;
     protected requestID: number | undefined;
@@ -57,7 +57,7 @@ export class Renderer {
         this.scaleToBoardSize();
 
         // Draw active cells
-        this.ctx.fillStyle = this.colours.active;
+        this.ctx.fillStyle = this.colors.active;
         Board.loop(this.board.data, (cell, x, y) => {
             if (cell)
                 this.ctx.fillRect(x, y, 1, 1);
@@ -65,7 +65,7 @@ export class Renderer {
 
         // Draw highlighted cell
         if (this.highlightedCellX !== undefined && this.highlightedCellY !== undefined) {
-            this.ctx.fillStyle = this.colours.highlighted;
+            this.ctx.fillStyle = this.colors.highlighted;
             this.ctx.fillRect(this.highlightedCellX, this.highlightedCellY, 1, 1);
         }
 

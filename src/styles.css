@@ -19,6 +19,7 @@
 body {
     margin: 0;
     background-color: var(--background);
+    color: var(--text);
 }
 
 #board {
@@ -39,10 +40,6 @@ body {
     position: absolute;
     background-color: var(--controls-background);
     width: fit-content;
-}
-
-p, h4, label {
-    color: var(--text);
 }
 
 .board-size-input {
