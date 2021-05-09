@@ -71,75 +71,22 @@ export class Board {
     }
 
     protected calculateNeighbours(): number[][] {
-        // TODO this spaghetti is embarrasing; refactor to use loopAndSet
+        let neighbours: number[][] = this.newBlankGrid(this.width, this.height);
+        Board.loopAndSet(neighbours, (cell, x, y) => {
+            let neighboursCount: number = 0;
 
-        let width: number = this.width;
-        let height: number = this.height;
-        // 0 based width/height
-        let w: number = width - 1;
-        let h: number = height - 1;
+            // Use try/catches for when trying to read outside the grid
+            try { neighboursCount += this.data[y - 1][x - 1]; } catch (error) { }
+            try { neighboursCount += this.data[y - 1][x]; } catch (error) { }
+            try { neighboursCount += this.data[y - 1][x + 1]; } catch (error) { }
+            try { neighboursCount += this.data[y][x - 1]; } catch (error) { }
+            try { neighboursCount += this.data[y][x + 1]; } catch (error) { }
+            try { neighboursCount += this.data[y + 1][x - 1]; } catch (error) { }
+            try { neighboursCount += this.data[y + 1][x]; } catch (error) { }
+            try { neighboursCount += this.data[y + 1][x + 1]; } catch (error) { }
 
-        let neighbours: number[][] = this.newBlankGrid(width, height);
-        // Corners
-        neighbours[0][0] =
-            this.data[0][1] +
-            this.data[1][0] +
-            this.data[1][1];
-        neighbours[h][0] =
-            this.data[h][1] +
-            this.data[h - 1][0] +
-            this.data[h - 1][1];
-        neighbours[0][w] =
-            this.data[0][w - 1] +
-            this.data[1][w] +
-            this.data[1][w - 1];
-        neighbours[h][w] =
-            this.data[h][w - 1] +
-            this.data[h - 1][w] +
-            this.data[h - 1][w - 1];
-        // Sides
-        for (let y = 1; y < h; y++) {
-            neighbours[y][0] =
-                this.data[y - 1][0] +
-                this.data[y - 1][1] +
-                this.data[y][1] +
-                this.data[y + 1][1] +
-                this.data[y + 1][0];
-            neighbours[y][w] =
-                this.data[y - 1][w] +
-                this.data[y - 1][w - 1] +
-                this.data[y][w - 1] +
-                this.data[y + 1][w - 1] +
-                this.data[y + 1][w];
-        }
-        for (let x = 1; x < w; x++) {
-            neighbours[0][x] =
-                this.data[0][x - 1] +
-                this.data[1][x - 1] +
-                this.data[1][x] +
-                this.data[1][x + 1] +
-                this.data[0][x + 1];
-            neighbours[h][x] =
-                this.data[h][x - 1] +
-                this.data[h - 1][x - 1] +
-                this.data[h - 1][x] +
-                this.data[h - 1][x + 1] +
-                this.data[h][x + 1];
-        }
-        // Inside
-        for (let y = 1; y < h; y++) {
-            for (let x = 1; x < w; x++) {
-                neighbours[y][x] =
-                    this.data[y - 1][x - 1] +
-                    this.data[y - 1][x] +
-                    this.data[y - 1][x + 1] +
-                    this.data[y][x - 1] +
-                    this.data[y][x + 1] +
-                    this.data[y + 1][x - 1] +
-                    this.data[y + 1][x] +
-                    this.data[y + 1][x + 1];
-            }
-        }
+            return neighboursCount;
+        });
 
         return neighbours;
     }
