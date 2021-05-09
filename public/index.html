@@ -10,11 +10,19 @@
   <meta name="author" content="carru" />
 </head>
 
-<body>
+<body class="dark-theme">
   <button id="toggle-controls-btn">Show/Hide controls</button>
   <div id="controls">
     <h4>Renderer</h4>
     <div class="controls-section" id="render-settings">
+      <p>Theme</p>
+      <div>
+        <input type="radio" id="dark-theme" name="theme" value="1" checked>
+        <label for="dark-theme">Dark</label>
+        <input type="radio" id="light-theme" name="theme" value="2">
+        <label for="light-theme">Light</label>
+      </div>
+      <p></p>
       <button id="start-renderer-btn">Start</button>
       <button id="stop-renderer-btn">Stop</button>
     </div>

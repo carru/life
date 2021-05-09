@@ -1,10 +1,16 @@
 import { Board } from "./Board";
 
+export enum Theme {
+    DARK = 1,
+    LIGHT
+}
+
 export class Renderer {
     protected canvas: HTMLCanvasElement;
     protected ctx: CanvasRenderingContext2D;
     public board!: Board;
-    protected stopFlag: boolean = false;
+    public theme: Theme = Theme.DARK;
+    protected requestID: number | undefined;
 
     constructor(board?: Board) {
         this.canvas = document.getElementById('board') as HTMLCanvasElement;
@@ -15,34 +21,37 @@ export class Renderer {
     }
 
     public start(): void {
-        window.requestAnimationFrame(() => this.draw());
+        this.requestID = window.requestAnimationFrame(() => this.draw());
     }
 
     public stop(): void {
-        this.stopFlag = true;
+        if (this.requestID) {
+            window.cancelAnimationFrame(this.requestID);
+            this.requestID = undefined;
+        }
     }
 
     protected draw(): void {
-        if (this.stopFlag) {
-            this.stopFlag = false;
-            return;
-        }
-
         if (!this.board) return;
 
         this.scaleToBoardSize();
 
-        this.ctx.fillStyle = 'black';
-        this.board.data.forEach((row, y) => {
-            row.forEach((cell, x) => {
-                if (cell)
-                    this.ctx.fillRect(x, y, 1, 1);
-            })
+        switch (this.theme) {
+            case Theme.LIGHT:
+                this.ctx.fillStyle = 'black';
+                break;
+            case Theme.DARK:
+                this.ctx.fillStyle = 'white';
+                break;
+        }
+        Board.loop(this.board.data, (cell, x, y) => {
+            if (cell)
+                this.ctx.fillRect(x, y, 1, 1);
         })
-        
-        window.requestAnimationFrame(() => this.draw());
+
+        this.requestID = window.requestAnimationFrame(() => this.draw());
     }
-    
+
     protected scaleToBoardSize() {
         this.ctx.restore();
         this.canvas.width = this.canvas.clientWidth;

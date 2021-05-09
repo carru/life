@@ -29,6 +29,17 @@ export class Board {
         }
     }
 
+    public static loop(data: number[][], callback: (cell: number, x: number, y: number) => void): void {
+        let width: number = data[0].length;
+        let height: number = data.length;
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                callback(data[y][x], x, y);
+            }
+        }
+    }
+
     protected newBlankGrid(width: number, height: number): number[][] {
         return new Array(height).fill(0).map(() => new Array(width).fill(0));
     }

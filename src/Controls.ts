@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { Board } from "./Board";
-import { Renderer } from "./Renderer";
+import { Renderer, Theme } from "./Renderer";
 import { SimulationLoop, SimulationSpeed } from "./SimulationLoop";
 
 export class Controls {
@@ -14,22 +14,23 @@ export class Controls {
     constructor() {
         this.boardWidth = 50;
         this.boardHeight = 50;
-        
+
         this.board = new Board(this.boardWidth, this.boardHeight);
-        
+
         this.renderer = new Renderer(this.board);
         this.renderer.start();
-        
+
         this.speed = SimulationSpeed.NORMAL;
         this.simulationLoop = new SimulationLoop(this.board, this.speed);
         this.simulationLoop.start();
-        
+
         $("#toggle-controls-btn").on("click", () => this.toggle());
         $("#clear-board-btn").on("click", () => this.board.clear());
         $("#randomize-board-btn").on("click", () => this.board.randomize());
         $("#step-simulation-btn").on("click", () => this.singleStep());
         $("#board-width").on("change", () => this.updateBoardSize());
         $("#board-height").on("change", () => this.updateBoardSize());
+        $("input[name='theme']").on("change", (e: JQuery.ChangeEvent) => this.theme = Number(e.currentTarget.value));
     }
 
     public get boardWidth() {
@@ -51,6 +52,18 @@ export class Controls {
         if (boardHeight > 0) {
             this._boardHeight = boardHeight;
             $("#board-height").val(boardHeight);
+        }
+    }
+
+    protected set theme(theme: Theme) {
+        this.renderer.theme = theme;
+        switch (theme) {
+            case Theme.DARK:
+                document.body.className = 'dark-theme'
+                break;
+            case Theme.LIGHT:
+                document.body.className = 'light-theme'
+                break;
         }
     }
 
@@ -105,7 +118,7 @@ export class Controls {
         this.board = newBoard;
 
         this.renderer.board = newBoard;
-        
+
         let simWasRunning: boolean = this.simulationLoop.isRunning();
         this.simulationLoop.stop();
         this.simulationLoop = new SimulationLoop(newBoard, this.speed);

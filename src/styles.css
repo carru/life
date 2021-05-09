@@ -1,7 +1,20 @@
+.dark-theme {
+    --text: white;
+    --background: black;
+    --controls-background: rgba(0, 0, 0, 0.75);
+}
+
+.light-theme {
+    --text: black;
+    --background: white;
+    --controls-background: rgba(255, 255, 255, .75);
+}
+
 body {
     margin: 0;
+    background-color: var(--background);
 }
-  
+
 #board {
     position: absolute;
     left: 0;
@@ -13,8 +26,12 @@ body {
 }
 
 #controls {
-    background-color: rgba(255, 255, 255, .75);
+    background-color: var(--controls-background);
     display: table;
+}
+
+p, h4, label {
+    color: var(--text);
 }
 
 .board-size-input {
