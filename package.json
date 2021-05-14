@@ -2,14 +2,14 @@
   "name": "life",
   "version": "1.0.0",
   "description": "Game of life",
-  "main": "src/index.ts",
   "scripts": {
+    "build": "poi src/index.html --prod",
+    "dev": "poi src/index.html --serve"
   },
   "author": "carru",
   "license": "ISC",
   "repository": "github:carru/life",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.1",
-    "typescript": "^4.2.4"
+    "poi": "^12.0.0"
   }
 }
