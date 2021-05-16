@@ -57,6 +57,7 @@ export class Controls {
 
         this.ui.cancelPrefab.onclick = () => this.renderer.activePrefab = undefined;
         this.ui.prefabGlider.onclick = () => this.renderer.activePrefab = Prefabs.glider;
+        this.ui.prefabGosper.onclick = () => this.renderer.activePrefab = Prefabs.gosper;
     }
 
     public get boardWidth() {

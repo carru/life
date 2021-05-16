@@ -37,4 +37,5 @@ export class UI {
     public cancelPrefab = document.getElementById('cancel-prefab-btn') as HTMLButtonElement;
     // Prefabs
     public prefabGlider = document.getElementById('prefab-glider-btn') as HTMLButtonElement;
+    public prefabGosper = document.getElementById('prefab-gosper-btn') as HTMLButtonElement;
 }

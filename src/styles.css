@@ -60,3 +60,8 @@ body {
 .controls-section {
     margin: 1em;
 }
+
+.prefab-icon {
+    width: 100%;
+    height: auto;
+}
