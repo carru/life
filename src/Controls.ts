@@ -8,7 +8,6 @@ export class Controls {
     protected renderer: Renderer;
     protected simulationLoop: SimulationLoop;
     protected board: Board;
-    protected ui: UI = new UI;
     protected _speed!: SimulationSpeed;
 
     constructor() {
@@ -34,46 +33,46 @@ export class Controls {
     }
 
     protected setUiEvents(): void {
-        this.ui.settings.onclick = () => this.togglePanelDisplay(this.ui.controlsPanel);
-        this.ui.prefabs.onclick = () => this.togglePanelDisplay(this.ui.prefabsPanel);
+        UI.settings.onclick = () => this.togglePanelDisplay(UI.controlsPanel);
+        UI.prefabs.onclick = () => this.togglePanelDisplay(UI.prefabsPanel);
 
-        this.ui.themeDark.onchange = (e) => this.theme = (e.target as any).value;
-        this.ui.themeLight.onchange = (e) => this.theme = (e.target as any).value;
-        this.ui.startRenderer.onclick = () => this.renderer.start();
-        this.ui.stopRenderer.onclick = () => this.renderer.stop();
+        UI.themeDark.onchange = (e) => this.theme = (e.target as any).value;
+        UI.themeLight.onchange = (e) => this.theme = (e.target as any).value;
+        UI.startRenderer.onclick = () => this.renderer.start();
+        UI.stopRenderer.onclick = () => this.renderer.stop();
 
-        this.ui.clearBoard.onclick = () => this.board.clear();
-        this.ui.randomizeBoard.onclick = () => this.board.randomize();
-        this.ui.boardWidth.onchange = () => this.onBoardSizeChange();
-        this.ui.boardHeight.onchange = () => this.onBoardSizeChange();
+        UI.clearBoard.onclick = () => this.board.clear();
+        UI.randomizeBoard.onclick = () => this.board.randomize();
+        UI.boardWidth.onchange = () => this.onBoardSizeChange();
+        UI.boardHeight.onchange = () => this.onBoardSizeChange();
 
-        this.ui.startSimulation.onclick = () => this.simulationLoop.start();
-        this.ui.stopSimulation.onclick = () => this.simulationLoop.stop();
-        this.ui.stepSimulation.onclick = () => this.singleStep();
-        this.ui.speed1Simulation.onclick = () => this.speed = SimulationSpeed.NORMAL;
-        this.ui.speed2Simulation.onclick = () => this.speed = SimulationSpeed.FAST;
-        this.ui.speed3Simulation.onclick = () => this.speed = SimulationSpeed.FASTER;
-        this.ui.speed4Simulation.onclick = () => this.speed = SimulationSpeed.LUDICROUS;
+        UI.startSimulation.onclick = () => this.simulationLoop.start();
+        UI.stopSimulation.onclick = () => this.simulationLoop.stop();
+        UI.stepSimulation.onclick = () => this.singleStep();
+        UI.speed1Simulation.onclick = () => this.speed = SimulationSpeed.NORMAL;
+        UI.speed2Simulation.onclick = () => this.speed = SimulationSpeed.FAST;
+        UI.speed3Simulation.onclick = () => this.speed = SimulationSpeed.FASTER;
+        UI.speed4Simulation.onclick = () => this.speed = SimulationSpeed.LUDICROUS;
 
-        this.ui.cancelPrefab.onclick = () => this.renderer.activePrefab = undefined;
-        this.ui.prefabGlider.onclick = () => this.renderer.activePrefab = Prefabs.glider;
-        this.ui.prefabGosper.onclick = () => this.renderer.activePrefab = Prefabs.gosper;
+        UI.cancelPrefab.onclick = () => this.renderer.activePrefab = undefined;
+        UI.prefabGlider.onclick = () => this.renderer.activePrefab = Prefabs.glider;
+        UI.prefabGosper.onclick = () => this.renderer.activePrefab = Prefabs.gosper;
     }
 
     public get boardWidth() {
-        return Number(this.ui.boardWidth.value);
+        return Number(UI.boardWidth.value);
     }
 
     public set boardWidth(boardWidth: number) {
-        this.ui.boardWidth.value = String(boardWidth);
+        UI.boardWidth.value = String(boardWidth);
     }
 
     public get boardHeight() {
-        return Number(this.ui.boardHeight.value);
+        return Number(UI.boardHeight.value);
     }
 
     public set boardHeight(boardHeight: number) {
-        this.ui.boardHeight.value = String(boardHeight);
+        UI.boardHeight.value = String(boardHeight);
     }
 
     protected set theme(theme: Theme) {

@@ -4,42 +4,42 @@ export enum Theme {
 }
 
 export class UI {
-    public settings = document.getElementById('settings-btn') as HTMLButtonElement;
-    public prefabs = document.getElementById('prefabs-btn') as HTMLButtonElement;
+    public static settings = document.getElementById('settings-btn') as HTMLButtonElement;
+    public static prefabs = document.getElementById('prefabs-btn') as HTMLButtonElement;
 
     // Settings panel
-    public controlsPanel = document.getElementById('controls-panel') as HTMLElement ;
+    public static controlsPanel = document.getElementById('controls-panel') as HTMLElement ;
 
     // Renderer
     public static stats = document.getElementById('stats') as HTMLElement;
     public static setStatsText(frametime: number, fps: number) {
         UI.stats.innerHTML = `Frametime: ${frametime.toFixed(2)} ms <br> FPS: ${fps.toFixed(2)}`;
     }
-    public themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
-    public themeLight = document.getElementById('light-theme-radio') as HTMLInputElement;
-    public startRenderer = document.getElementById('start-renderer-btn') as HTMLButtonElement;
-    public stopRenderer = document.getElementById('stop-renderer-btn') as HTMLButtonElement;
+    public static themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
+    public static themeLight = document.getElementById('light-theme-radio') as HTMLInputElement;
+    public static startRenderer = document.getElementById('start-renderer-btn') as HTMLButtonElement;
+    public static stopRenderer = document.getElementById('stop-renderer-btn') as HTMLButtonElement;
 
     // Board
-    public clearBoard = document.getElementById('clear-board-btn') as HTMLButtonElement;
-    public randomizeBoard = document.getElementById('randomize-board-btn') as HTMLButtonElement;
-    public boardWidth = document.getElementById('board-width') as HTMLInputElement;
-    public boardHeight = document.getElementById('board-height') as HTMLInputElement;
+    public static clearBoard = document.getElementById('clear-board-btn') as HTMLButtonElement;
+    public static randomizeBoard = document.getElementById('randomize-board-btn') as HTMLButtonElement;
+    public static boardWidth = document.getElementById('board-width') as HTMLInputElement;
+    public static boardHeight = document.getElementById('board-height') as HTMLInputElement;
 
     // Simulation
-    public startSimulation = document.getElementById('start-simulation-btn') as HTMLButtonElement;
-    public stopSimulation = document.getElementById('stop-simulation-btn') as HTMLButtonElement;
-    public stepSimulation = document.getElementById('step-simulation-btn') as HTMLButtonElement;
-    public speed1Simulation = document.getElementById('simulation-speed-1-btn') as HTMLButtonElement;
-    public speed2Simulation = document.getElementById('simulation-speed-2-btn') as HTMLButtonElement;
-    public speed3Simulation = document.getElementById('simulation-speed-3-btn') as HTMLButtonElement;
-    public speed4Simulation = document.getElementById('simulation-speed-4-btn') as HTMLButtonElement;
+    public static startSimulation = document.getElementById('start-simulation-btn') as HTMLButtonElement;
+    public static stopSimulation = document.getElementById('stop-simulation-btn') as HTMLButtonElement;
+    public static stepSimulation = document.getElementById('step-simulation-btn') as HTMLButtonElement;
+    public static speed1Simulation = document.getElementById('simulation-speed-1-btn') as HTMLButtonElement;
+    public static speed2Simulation = document.getElementById('simulation-speed-2-btn') as HTMLButtonElement;
+    public static speed3Simulation = document.getElementById('simulation-speed-3-btn') as HTMLButtonElement;
+    public static speed4Simulation = document.getElementById('simulation-speed-4-btn') as HTMLButtonElement;
     
     // Prefabs panel
-    public prefabsPanel = document.getElementById('prefabs-panel') as HTMLElement ;
+    public static prefabsPanel = document.getElementById('prefabs-panel') as HTMLElement ;
 
-    public cancelPrefab = document.getElementById('cancel-prefab-btn') as HTMLButtonElement;
+    public static cancelPrefab = document.getElementById('cancel-prefab-btn') as HTMLButtonElement;
     // Prefabs
-    public prefabGlider = document.getElementById('prefab-glider-btn') as HTMLButtonElement;
-    public prefabGosper = document.getElementById('prefab-gosper-btn') as HTMLButtonElement;
+    public static prefabGlider = document.getElementById('prefab-glider-btn') as HTMLButtonElement;
+    public static prefabGosper = document.getElementById('prefab-gosper-btn') as HTMLButtonElement;
 }
