@@ -11,6 +11,10 @@ export class UI {
     public controlsPanel = document.getElementById('controls-panel') as HTMLElement ;
 
     // Renderer
+    public static stats = document.getElementById('stats') as HTMLElement;
+    public static setStatsText(frametime: number, fps: number) {
+        UI.stats.innerHTML = `Frametime: ${frametime.toFixed(2)} ms <br> FPS: ${fps.toFixed(2)}`;
+    }
     public themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
     public themeLight = document.getElementById('light-theme-radio') as HTMLInputElement;
     public startRenderer = document.getElementById('start-renderer-btn') as HTMLButtonElement;

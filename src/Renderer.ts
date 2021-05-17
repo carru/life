@@ -1,4 +1,5 @@
 import { Board } from "./Board";
+import { UI } from "./UI";
 
 interface Colors {
     active: string,
@@ -17,6 +18,7 @@ export class Renderer {
     protected highlightedCellY: number | undefined;
     protected scaleFactorX: number | undefined;
     protected scaleFactorY: number | undefined;
+    protected prevTimestamp: number;
 
     constructor(board?: Board) {
         this.canvas = document.getElementById('board') as HTMLCanvasElement;
@@ -38,6 +40,7 @@ export class Renderer {
             window.cancelAnimationFrame(this.requestID);
             this.requestID = undefined;
         }
+        UI.setStatsText(0, 0);
     }
 
     protected onMouseMove(x: number, y: number): void {
@@ -59,7 +62,12 @@ export class Renderer {
             this.board.toggleCell(this.highlightedCellX, this.highlightedCellY);
     }
 
-    protected draw(): void {
+    protected draw(timestamp: number): void {
+        const frametime = timestamp - this.prevTimestamp;
+        const fps = 1 / (frametime / 1000);
+        UI.setStatsText(frametime, fps);
+        this.prevTimestamp = timestamp;
+
         if (!this.board) return;
 
         this.scaleToBoardSize();
@@ -88,7 +96,7 @@ export class Renderer {
             }
         }
 
-        this.requestID = window.requestAnimationFrame(() => this.draw());
+        this.requestID = window.requestAnimationFrame((timestamp) => this.draw(timestamp));
     }
 
     protected scaleToBoardSize() {
