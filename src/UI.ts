@@ -11,9 +11,9 @@ export class UI {
     public static controlsPanel = document.getElementById('controls-panel') as HTMLElement ;
 
     // Renderer
-    public static stats = document.getElementById('stats') as HTMLElement;
-    public static setStatsText(frametime: number, fps: number) {
-        UI.stats.innerHTML = `Frametime: ${frametime.toFixed(2)} ms <br> FPS: ${fps.toFixed(2)}`;
+    public static renderStats = document.getElementById('render-stats') as HTMLElement;
+    public static setRenderStatsText(frametime: number, fps: number) {
+        UI.renderStats.innerHTML = `Frametime: ${frametime.toFixed(2)} ms <br> FPS: ${fps.toFixed(2)}`;
     }
     public static themeDark = document.getElementById('dark-theme-radio') as HTMLInputElement;
     public static themeLight = document.getElementById('light-theme-radio') as HTMLInputElement;
@@ -30,6 +30,10 @@ export class UI {
     public static startSimulation = document.getElementById('start-simulation-btn') as HTMLButtonElement;
     public static stopSimulation = document.getElementById('stop-simulation-btn') as HTMLButtonElement;
     public static stepSimulation = document.getElementById('step-simulation-btn') as HTMLButtonElement;
+    public static simStats = document.getElementById('sim-stats') as HTMLElement;
+    public static setSimStatsText(stepTime: number) {
+        UI.simStats.innerHTML = `Step time: ${stepTime.toFixed(2)} ms`;
+    }
     public static speed1Simulation = document.getElementById('simulation-speed-1-btn') as HTMLButtonElement;
     public static speed2Simulation = document.getElementById('simulation-speed-2-btn') as HTMLButtonElement;
     public static speed3Simulation = document.getElementById('simulation-speed-3-btn') as HTMLButtonElement;

@@ -40,7 +40,7 @@ export class Renderer {
             window.cancelAnimationFrame(this.requestID);
             this.requestID = undefined;
         }
-        UI.setStatsText(0, 0);
+        UI.setRenderStatsText(0, 0);
     }
 
     protected onMouseMove(x: number, y: number): void {
@@ -65,7 +65,7 @@ export class Renderer {
     protected draw(timestamp: number): void {
         const frametime = timestamp - this.prevTimestamp;
         const fps = 1 / (frametime / 1000);
-        UI.setStatsText(frametime, fps);
+        UI.setRenderStatsText(frametime, fps);
         this.prevTimestamp = timestamp;
 
         if (!this.board) return;
