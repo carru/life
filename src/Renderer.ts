@@ -32,7 +32,7 @@ export class Renderer {
     }
 
     public start(): void {
-        this.requestID = window.requestAnimationFrame(() => this.draw());
+        this.requestID = window.requestAnimationFrame((timestamp) => this.draw(timestamp));
     }
 
     public stop(): void {
