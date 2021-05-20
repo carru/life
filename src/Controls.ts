@@ -1,19 +1,20 @@
 import { Board } from "./Board";
+import { GpuRenderer } from "./GpuRenderer";
 import { Prefabs } from "./Prefabs";
 import { Renderer } from "./Renderer";
 import { SimulationLoop, SimulationSpeed } from "./SimulationLoop";
 import { Theme, UI } from "./UI";
 
 export class Controls {
-    protected renderer: Renderer;
+    protected renderer: Renderer | GpuRenderer;
     protected simulationLoop: SimulationLoop;
     protected board: Board;
     protected _speed!: SimulationSpeed;
 
     constructor() {
         // Defaults
-        this.boardWidth = 50;
-        this.boardHeight = 50;
+        this.boardWidth = 500;
+        this.boardHeight = 500;
         this.speed = SimulationSpeed.FAST;
 
         // Initialize board
@@ -21,7 +22,7 @@ export class Controls {
         this.board.randomize();
 
         // Initialize renderer
-        this.renderer = new Renderer(this.board);
+        this.renderer = new GpuRenderer(this.board);
         this.renderer.start();
         this.theme = Theme.DARK;
 

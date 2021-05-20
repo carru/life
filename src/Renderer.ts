@@ -63,12 +63,12 @@ export class Renderer {
     }
 
     protected draw(timestamp: number): void {
+        if (!this.board) return;
+
         const frametime = timestamp - this.prevTimestamp;
         const fps = 1 / (frametime / 1000);
         UI.setRenderStatsText(frametime, fps);
         this.prevTimestamp = timestamp;
-
-        if (!this.board) return;
 
         this.scaleToBoardSize();
 

@@ -46,4 +46,7 @@ export class UI {
     // Prefabs
     public static prefabGlider = document.getElementById('prefab-glider-btn') as HTMLButtonElement;
     public static prefabGosper = document.getElementById('prefab-gosper-btn') as HTMLButtonElement;
+    
+    // Canvas
+    public static canvas = document.getElementById('board') as HTMLCanvasElement;
 }
