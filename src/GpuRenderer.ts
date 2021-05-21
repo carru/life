@@ -21,7 +21,7 @@ interface BoardVerticesBuffer {
 }
 
 export class GpuRenderer {
-    public board: Board | undefined;
+    protected _board: Board | undefined;
     public colors!: Colors;
     public activePrefab: number[][] | undefined;
     protected gl: WebGL2RenderingContext;
@@ -48,10 +48,17 @@ export class GpuRenderer {
         this.gl.enableVertexAttribArray(this.boardProgram.a_maskLoc);
         this.gl = UI.canvas.getContext('webgl2') as WebGL2RenderingContext;
 
-        if (board) {
+        if (board)
             this.board = board;
-            this.updateBoardGridVerticesBuffer();
-        }
+    }
+
+    public get board() {
+        return this._board;
+    }
+
+    public set board(board: Board) {
+        this._board = board;
+        this.updateBoardGridVerticesBuffer();
     }
 
     public start(): void {
