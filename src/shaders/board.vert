@@ -1,6 +1,7 @@
 #version 300 es
         
 in vec2 a_position;
+in float a_mask;
 
 out vec4 v_color;
 
@@ -14,5 +15,5 @@ void main() {
 
     gl_Position = vec4(clipSpace, 0, 1);
 
-    v_color = vec4(1, 1, 1, 1);
+    v_color = vec4(1, 1, 1, 1) * a_mask;
 }

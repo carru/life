@@ -23,6 +23,7 @@ export class Controls {
 
         // Initialize renderer
         this.renderer = new GpuRenderer(this.board);
+        // this.renderer = new Renderer(this.board);
         this.renderer.start();
         this.theme = Theme.DARK;
 

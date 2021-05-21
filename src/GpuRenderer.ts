@@ -8,10 +8,16 @@ interface Colors {
     prefab: string
 }
 
-interface Program {
+interface BoardProgram {
     program: WebGLProgram,
     a_positionLoc: number,
+    a_maskLoc: number,
     vao: WebGLVertexArrayObject
+}
+
+interface BoardVerticesBuffer {
+    vertices: number[],
+    buffer: WebGLBuffer
 }
 
 export class GpuRenderer {
@@ -19,30 +25,33 @@ export class GpuRenderer {
     public colors!: Colors;
     public activePrefab: number[][] | undefined;
     protected gl: WebGL2RenderingContext;
-    protected boardProgram: Program;
+    protected boardProgram: BoardProgram;
+    protected boardVertices: BoardVerticesBuffer;
+    protected boardMask: BoardVerticesBuffer;
+    protected maskLastUpdated: number;
     protected requestID: number | undefined;
     protected prevTimestamp: number;
 
     constructor(board?: Board) {
         this.gl = UI.canvas.getContext('webgl2') as WebGL2RenderingContext;
 
-        if (board) {
-            this.board = board;
-            // this.updateBoardGridVerticesBuffer();
-        }
-
-        // UI.canvas.onmousemove = (e) => this.onMouseMove(e.clientX, e.clientY);
-        // UI.canvas.onclick = () => this.onMouseClick();
-
         // init gl programs
         const program = WebGLUtils.createProgram(this.gl, require('./shaders/board.vert'), require('./shaders/board.frag'));
         this.boardProgram = {
             program,
             a_positionLoc: this.gl.getAttribLocation(program, "a_position"),
+            a_maskLoc: this.gl.getAttribLocation(program, "a_mask"),
             vao: this.gl.createVertexArray()
         }
         this.gl.bindVertexArray(this.boardProgram.vao);
         this.gl.enableVertexAttribArray(this.boardProgram.a_positionLoc);
+        this.gl.enableVertexAttribArray(this.boardProgram.a_maskLoc);
+        this.gl = UI.canvas.getContext('webgl2') as WebGL2RenderingContext;
+
+        if (board) {
+            this.board = board;
+            this.updateBoardGridVerticesBuffer();
+        }
     }
 
     public start(): void {
@@ -57,11 +66,42 @@ export class GpuRenderer {
         UI.setRenderStatsText(0, 0);
     }
 
-    // protected onMouseMove(x: number, y: number): void {
-    // }
+    protected updateMaskBuffer(): void {
+        // Clear previous buffer, if any
+        if (this.boardMask) {
+            this.gl.deleteBuffer(this.boardMask.buffer);
+            delete this.boardMask;
+        }
 
-    // protected onMouseClick(): void {
-    // }
+        this.boardMask = {
+            vertices: this.activeCellMask,
+            buffer: this.gl.createBuffer()
+        }
+        this.gl.bindVertexArray(this.boardProgram.vao);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.boardMask.buffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.boardMask.vertices), this.gl.STATIC_DRAW);
+        this.gl.vertexAttribPointer(this.boardProgram.a_maskLoc, 1, this.gl.FLOAT, false, 0, 0);
+
+        this.maskLastUpdated = this.board.lastUpdated;
+    }
+
+    protected updateBoardGridVerticesBuffer(): void {
+        // Clear previous buffer, if any
+        if (this.boardVertices) {
+            this.gl.deleteBuffer(this.boardVertices.buffer);
+            delete this.boardVertices;
+        }
+
+        this.boardVertices = {
+            // vertices: this.activeCellVertices,
+            vertices: this.allVertices,
+            buffer: this.gl.createBuffer()
+        }
+        this.gl.bindVertexArray(this.boardProgram.vao);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.boardVertices.buffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.boardVertices.vertices), this.gl.STATIC_DRAW);
+        this.gl.vertexAttribPointer(this.boardProgram.a_positionLoc, 2, this.gl.FLOAT, false, 0, 0);
+    }
 
     protected draw(timestamp: number): void {
         if (!this.board) return;
@@ -76,35 +116,37 @@ export class GpuRenderer {
         this.gl.clearColor(0, 0, 0, 0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        /* Computing vertices on each frame is too slow
-         * need to precalculate all vertices of all cells and then use a mask or texture to display only active ones */
-        const vertices = this.activeCellVertices;
-        const verticesBuffer = this.gl.createBuffer();
-        this.gl.bindVertexArray(this.boardProgram.vao);
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, verticesBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
-        this.gl.vertexAttribPointer(this.boardProgram.a_positionLoc, 2, this.gl.FLOAT, false, 0, 0);
+        // Calculate mask and save to buffer; only if board has changed
+        if (this.maskLastUpdated !== this.board.lastUpdated)
+            this.updateMaskBuffer();
 
         this.gl.useProgram(this.boardProgram.program);
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, vertices.length / 2);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, this.boardVertices.vertices.length / 2);
 
         this.requestID = window.requestAnimationFrame((timestamp) => this.draw(timestamp));
     }
 
-    protected get activeCellVertices() {
+    protected get activeCellMask(): number[] {
+        let mask = [];
+        this.board.loopData((cell) => {
+            mask.push(...[cell, cell, cell, cell, cell, cell])
+        })
+        return mask;
+    }
+
+    protected get allVertices(): number[] {
         const w = this.board.width;
         const h = this.board.height;
         let vertices = [];
         this.board.loopData((cell, x, y) => {
-            if (cell)
-                vertices.push(...[
-                    x / h, y / w,
-                    x / h, (y + 1) / w,
-                    (x + 1) / h, y / w,
-                    (x + 1) / h, y / w,
-                    (x + 1) / h, (y + 1) / w,
-                    x / h, (y + 1) / w
-                ])
+            vertices.push(...[
+                x / h, y / w,
+                x / h, (y + 1) / w,
+                (x + 1) / h, y / w,
+                (x + 1) / h, y / w,
+                (x + 1) / h, (y + 1) / w,
+                x / h, (y + 1) / w
+            ])
         })
         return vertices;
     }

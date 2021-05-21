@@ -1,5 +1,6 @@
 export class Board {
     public data: number[][] = [];
+    public lastUpdated: number;
 
     constructor(width?: number, height?: number) {
         if (width && height)
@@ -8,18 +9,22 @@ export class Board {
 
     public randomize(): void {
         this.loopAndSetData(() => { return Math.round(Math.random()) });
+        this.lastUpdated = performance.now();
     }
 
     public clear(): void {
         this.loopAndSetData(() => { return 0 });
+        this.lastUpdated = performance.now();
     }
 
     public toggleCell(x: number, y: number): void {
         this.data[y][x] = (this.data[y][x]) ? 0 : 1;
+        this.lastUpdated = performance.now();
     }
 
     protected loopAndSetData(callback: (cell: number, x: number, y: number) => number): void {
         Board.loopAndSet(this.data, callback);
+        this.lastUpdated = performance.now();
     }
 
     protected static loopAndSet(data: number[][], callback: (cell: number, x: number, y: number) => number): void {
@@ -57,6 +62,7 @@ export class Board {
             if (cell)
                 this.data[y + pfy][x + pfx] = 1;
         });
+        this.lastUpdated = performance.now();
     }
 
     public step(): void {
@@ -75,6 +81,7 @@ export class Board {
             else
                 return 0;
         });
+        this.lastUpdated = performance.now();
     }
 
     protected calculateNeighbours(): number[][] {
@@ -100,6 +107,7 @@ export class Board {
 
     protected normalize(): void {
         this.loopAndSetData((cell) => { return (cell) ? 1 : 0 });
+        this.lastUpdated = performance.now();
     }
 
     public copyAndResize(width: number, height: number): Board {
