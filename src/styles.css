@@ -1,18 +1,18 @@
 .dark-theme {
     --prefabCell: rgba(120, 110, 255, 0.75);
     --highlightedCell: rgba(0, 255, 76, 0.75);
-    --activeCell: white;
-    --text: white;
-    --background: black;
+    --activeCell: rgba(255, 255, 255, 1);
+    --text: rgba(255, 255, 255, 1);
+    --background: rgba(0, 0, 0, 1);
     --controls-background: rgba(0, 0, 0, 0.75);
 }
 
 .light-theme {
     --prefabCell: rgba(120, 110, 255, 0.75);
     --highlightedCell: rgba(0, 255, 76, 0.75);
-    --activeCell: black;
-    --text: black;
-    --background: white;
+    --activeCell: rgba(0, 0, 0, 1);
+    --text: rgba(0, 0, 0, 1);
+    --background: rgba(255, 255, 255, 1);
     --controls-background: rgba(255, 255, 255, .75);
 }
 

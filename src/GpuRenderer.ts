@@ -12,6 +12,7 @@ interface BoardProgram {
     program: WebGLProgram,
     a_positionLoc: number,
     a_maskLoc: number,
+    u_colorLoc: WebGLUniformLocation,
     vao: WebGLVertexArrayObject
 }
 
@@ -22,7 +23,7 @@ interface BoardVerticesBuffer {
 
 export class GpuRenderer {
     protected _board: Board | undefined;
-    public colors!: Colors;
+    public _colors!: Colors;
     public activePrefab: number[][] | undefined;
     protected gl: WebGL2RenderingContext;
     protected boardProgram: BoardProgram;
@@ -41,6 +42,7 @@ export class GpuRenderer {
             program,
             a_positionLoc: this.gl.getAttribLocation(program, "a_position"),
             a_maskLoc: this.gl.getAttribLocation(program, "a_mask"),
+            u_colorLoc: this.gl.getUniformLocation(program, "u_color"),
             vao: this.gl.createVertexArray()
         }
         this.gl.bindVertexArray(this.boardProgram.vao);
@@ -61,6 +63,15 @@ export class GpuRenderer {
         this.updateBoardGridVerticesBuffer();
     }
 
+    public get colors() {
+        return this._colors;
+    }
+
+    public set colors(colors: Colors) {
+        this._colors = colors;
+        this.updateColorUniforms();
+    }
+
     public start(): void {
         this.requestID = window.requestAnimationFrame((timestamp) => this.draw(timestamp));
     }
@@ -71,6 +82,21 @@ export class GpuRenderer {
             this.requestID = undefined;
         }
         UI.setRenderStatsText(0, 0);
+    }
+
+    protected updateColorUniforms(): void {
+        this.setColorUniform(this.boardProgram.program, this.boardProgram.u_colorLoc, this.colors.active);
+    }
+
+    protected setColorUniform(program: WebGLProgram, uLoc: WebGLUniformLocation, rgbaString: string): void {
+        this.gl.useProgram(program);
+        const color = this.rgba2Components(rgbaString);
+        this.gl.uniform4f(uLoc, color[0], color[1], color[2], color[3]);
+    }
+
+    protected rgba2Components(rgbaString: string): number[] {
+        const matches = rgbaString.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d*\.?\d*)\)/);
+        return [Number.parseFloat(matches[1]), Number.parseFloat(matches[2]), Number.parseFloat(matches[3]), Number.parseFloat(matches[4])];
     }
 
     protected updateMaskBuffer(): void {
@@ -120,6 +146,7 @@ export class GpuRenderer {
 
         this.resizeCanvasToDisplaySize();
 
+        // Clear canvas
         this.gl.clearColor(0, 0, 0, 0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
@@ -127,6 +154,7 @@ export class GpuRenderer {
         if (this.maskLastUpdated !== this.board.lastUpdated)
             this.updateMaskBuffer();
 
+        // Draw active cells
         this.gl.useProgram(this.boardProgram.program);
         this.gl.drawArrays(this.gl.TRIANGLES, 0, this.boardVertices.vertices.length / 2);
 
