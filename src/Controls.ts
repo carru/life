@@ -13,8 +13,8 @@ export class Controls {
 
     constructor() {
         // Defaults
-        this.boardWidth = 500;
-        this.boardHeight = 500;
+        this.boardWidth = 50;
+        this.boardHeight = 50;
         this.speed = SimulationSpeed.FAST;
 
         // Initialize board

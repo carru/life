@@ -47,6 +47,8 @@ export class GpuRenderer {
 
     protected scaleFactorX: number | undefined;
     protected scaleFactorY: number | undefined;
+    protected highlightedCellX: number | undefined;
+    protected highlightedCellY: number | undefined;
 
     constructor(board?: Board) {
         this.gl = UI.canvas.getContext('webgl2') as WebGL2RenderingContext;
@@ -81,7 +83,7 @@ export class GpuRenderer {
             this.board = board;
 
         UI.canvas.onmousemove = (e) => this.onMouseMove(e.clientX, e.clientY);
-        // UI.canvas.onclick = () => this.onMouseClick();
+        UI.canvas.onclick = () => this.onMouseClick();
     }
 
     public get board() {
@@ -104,10 +106,22 @@ export class GpuRenderer {
 
     protected onMouseMove(x: number, y: number): void {
         if (this.scaleFactorX && this.scaleFactorY) {
-            const highlightedCellX = Math.floor(x / this.scaleFactorX);
-            const highlightedCellY = Math.floor(y / this.scaleFactorY);
-            this.updateHighlightedCellBuffer(highlightedCellX, highlightedCellY);
+            this.highlightedCellX = Math.floor(x / this.scaleFactorX);
+            this.highlightedCellY = Math.floor(y / this.scaleFactorY);
+            this.updateHighlightedCellBuffer(this.highlightedCellX, this.highlightedCellY);
         }
+    }
+
+    protected onMouseClick(): void {
+        if (!this.board) return;
+        if (!this.highlightedCellX || !this.highlightedCellY) return;
+
+        if (this.activePrefab) {
+            this.board.insertPrefab(this.highlightedCellX, this.highlightedCellY, this.activePrefab);
+            this.activePrefab = undefined;
+        }
+        else
+            this.board.toggleCell(this.highlightedCellX, this.highlightedCellY);
     }
 
     public start(): void {
